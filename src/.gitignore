@@ -1,0 +1,7 @@
+*.P
+brox_spatial
+*.png
+*.flo
+*.uv
+*.tif
+config.mk
