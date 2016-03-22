@@ -3,6 +3,7 @@ horn_schunck_classic
 horn_schunck_pyramidal
 brox_spatial
 brox_temporal
+tvl1flow
 *.png
 *.flo
 *.uv

@@ -63,7 +63,7 @@ LDFLAGS=$(CFLAGS_OPT) $(CFLAGS_EXTRA) $(LDFLAGS_EXTRA) $(OPENCL_LDFLAGS)
 COMPILE.c=$(CC) -c $(CFLAGS) $(CPPFLAGS)
 COMPILE.cpp=$(CXX) -c $(CXXFLAGS) $(CPPFLAGS)
 
-PROGRAMS = horn_schunck_classic horn_schunck_pyramidal brox_spatial brox_temporal
+PROGRAMS = horn_schunck_classic horn_schunck_pyramidal brox_spatial brox_temporal tvl1flow
 
 LIBRARY = libof.a
 
@@ -82,6 +82,7 @@ of_SOURCES_CPP = \
 	brox_optic_flow_temporal.cpp \
 	brox_spatial_mask.cpp \
 	brox_temporal_mask.cpp \
+	tvl1flow.cpp \
 	bicubic_interpolation.cpp \
 	gaussian.cpp \
 	mask.cpp \
@@ -89,9 +90,11 @@ of_SOURCES_CPP = \
 	xmalloc.cpp
 of_SOURCES_C =
 of_HEADERS = \
-	bicubic_interpolation.h \
+	horn_schunck.h \
 	brox_optic_flow.h \
 	brox_spatial_mask.h \
+	tvl1flow.h \
+	bicubic_interpolation.h \
 	gaussian.h \
 	mask.h \
 	zoom.h \
@@ -134,26 +137,38 @@ brox_temporal_HEADERS = \
 brox_temporal_OBJS =  $(brox_temporal_SOURCES_CPP:.cpp=.o) $(brox_temporal_SOURCES_C:.c=.o)
 brox_temporal_LIBS = $(LIBRARY) $(LIBS)
 
+tvl1flow_SOURCES_CPP = \
+	tvl1flow_main.cpp \
+	iio.cpp
+tvl1flow_SOURCES_C =
+tvl1flow_HEADERS = \
+	iio.h
+tvl1flow_OBJS =  $(tvl1flow_SOURCES_CPP:.cpp=.o) $(tvl1flow_SOURCES_C:.c=.o)
+tvl1flow_LIBS = $(LIBRARY) $(LIBS)
+
 SRCS_CPP = \
 	$(of_SOURCES_CPP) \
 	$(horn_schunck_classic_SOURCES_CPP) \
 	$(horn_schunck_pyramidal_SOURCES_CPP) \
 	$(brox_spatial_SOURCES_CPP) \
-	$(brox_temporal_SOURCES_CPP)
+	$(brox_temporal_SOURCES_CPP) \
+	$(tvl1flow_SOURCES_CPP)
 
 SRCS_C = \
 	$(of_SOURCES_C) \
 	$(horn_schunck_classic_SOURCES_C) \
 	$(horn_schunck_pyramidal_SOURCES_C) \
 	$(brox_spatial_SOURCES_C) \
-	$(brox_temporal_SOURCES_C)
+	$(brox_temporal_SOURCES_C) \
+	$(tvl1flow_SOURCES_C)
 
 HEADERS = \
 	$(of_HEADERS) \
 	$(horn_schunck_classic_HEADERS) \
 	$(horn_schunck_pyramidal_HEADERS) \
 	$(brox_spatial_HEADERS) \
-	$(brox_temporal_HEADERS)
+	$(brox_temporal_HEADERS) \
+	$(tvl1flow_HEADERS)
 
 horn_schunck_classic: $(horn_schunck_classic_OBJS) $(LIBRARY)
 	$(LD) -o $@ $^ $(LDFLAGS) $(horn_schunck_classic_LIBS) $(LDADD)
@@ -166,6 +181,9 @@ brox_spatial: $(brox_spatial_OBJS) $(LIBRARY)
 
 brox_temporal: $(brox_temporal_OBJS) $(LIBRARY)
 	$(LD) -o $@ $^ $(LDFLAGS) $(brox_temporal_LIBS) $(LDADD)
+
+tvl1flow: $(tvl1flow_OBJS) $(LIBRARY)
+	$(LD) -o $@ $^ $(LDFLAGS) $(tvl1flow_LIBS) $(LDADD)
 
 
 $(LIBRARY): $(of_OBJS)
