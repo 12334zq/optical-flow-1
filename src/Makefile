@@ -10,6 +10,7 @@ SRCDIR = .
 #CC	=	$(CROSS)gcc
 CXX	=	$(CROSS)g++
 #CPP	=	$(CROSS)gcc -E
+RANLIB	=	$(CROSS)ranlib
 LD	=	$(CXX)
 
 # CFLAGS_OPT is normally in the config$(CONFIG).mk file,
@@ -64,7 +65,7 @@ COMPILE.cpp=$(CXX) -c $(CXXFLAGS) $(CPPFLAGS)
 
 PROGRAMS = brox_spatial brox_temporal
 
-LIBRARY = 
+LIBRARY = libof.a
 
 #VPATH = $(SRCDIR):$(SRCDIR)/$(TOP_SRCDIR)/tools/log:$(SRCDIR)/$(TOP_SRCDIR)/tools/iniParser:$(SRCDIR)/$(TOP_SRCDIR)/tools/files
 
@@ -74,62 +75,58 @@ all: $(LIBRARY) $(PROGRAMS)
 
 lib: $(LIBRARY)
 
-brox_spatial_SOURCES_CPP = \
+of_SOURCES_CPP = \
 	brox_optic_flow_spatial.cpp \
-	brox_spatial_main.cpp \
+	brox_optic_flow_temporal.cpp \
 	bicubic_interpolation.cpp \
 	brox_spatial_mask.cpp \
+	brox_temporal_mask.cpp \
 	gaussian.cpp \
-	iio.cpp \
 	mask.cpp \
 	zoom.cpp \
 	xmalloc.cpp
-brox_spatial_SOURCES_C =
-brox_spatial_HEADERS = \
+of_SOURCES_C =
+of_HEADERS = \
 	bicubic_interpolation.h \
 	brox_optic_flow.h \
 	brox_spatial_mask.h \
 	gaussian.h \
-	iio.h \
 	mask.h \
 	zoom.h \
 	xmalloc.h
+of_OBJS =  $(of_SOURCES_CPP:.cpp=.o) $(of_SOURCES_C:.c=.o)
+
+brox_spatial_SOURCES_CPP = \
+	brox_spatial_main.cpp \
+	iio.cpp
+brox_spatial_SOURCES_C =
+brox_spatial_HEADERS = \
+	iio.h
 brox_spatial_OBJS =  $(brox_spatial_SOURCES_CPP:.cpp=.o) $(brox_spatial_SOURCES_C:.c=.o)
-brox_spatial_LIBS = $(LIBS)
+brox_spatial_LIBS = $(LIBRARY) $(LIBS)
 
 brox_temporal_SOURCES_CPP = \
-	brox_optic_flow_temporal.cpp \
 	brox_temporal_main.cpp \
-	bicubic_interpolation.cpp \
-	brox_temporal_mask.cpp \
-	gaussian.cpp \
-	iio.cpp \
-	mask.cpp \
-	zoom.cpp \
-	xmalloc.cpp
+	iio.cpp
 brox_temporal_SOURCES_C =
 brox_temporal_HEADERS = \
-	bicubic_interpolation.h \
-	brox_optic_flow.h \
-	brox_temporal_mask.h \
-	gaussian.h \
-	iio.h \
-	mask.h \
-	zoom.h \
-	xmalloc.h
+	iio.h
 brox_temporal_OBJS =  $(brox_temporal_SOURCES_CPP:.cpp=.o) $(brox_temporal_SOURCES_C:.c=.o)
-brox_temporal_LIBS = $(LIBS)
+brox_temporal_LIBS = $(LIBRARY) $(LIBS)
 
 
 SRCS_CPP = \
+	$(of_SOURCES_CPP) \
 	$(brox_spatial_SOURCES_CPP) \
 	$(brox_temporal_SOURCES_CPP)
 
 SRCS_C = \
+	$(of_SOURCES_C) \
 	$(brox_spatial_SOURCES_C) \
 	$(brox_temporal_SOURCES_C)
 
 HEADERS = \
+	$(of_HEADERS) \
 	$(brox_spatial_HEADERS) \
 	$(brox_temporal_HEADERS)
 
@@ -140,9 +137,9 @@ brox_temporal: $(brox_temporal_OBJS) $(LIBRARY)
 	$(LD) -o $@ $^ $(LDFLAGS) $(brox_temporal_LIBS) $(LDADD)
 
 
-#$(LIBRARY): $(util_OBJS)
-#	$(AR) rvu $@ $^
-#	$(RANLIB) $@
+$(LIBRARY): $(of_OBJS)
+	$(AR) rvu $@ $^
+	$(RANLIB) $@
 
 .SUFFIXES: .c .o .cpp
 

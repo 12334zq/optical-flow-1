@@ -1,5 +1,6 @@
 *.P
 brox_spatial
+brox_temporal
 *.png
 *.flo
 *.uv
