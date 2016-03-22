@@ -260,15 +260,15 @@ struct iio_image *iio_image_build(int dimension, int *sizes,
 
 #include <stdint.h>
 
-void iio_save_image_float_vec(char *filename, float *x, int w, int h, int pd);
-void iio_save_image_float_split(char *filename, float *x, int w, int h, int pd);
-void iio_save_image_double_vec(char *filename, double *x, int w, int h, int pd);
-void iio_save_image_float(char *filename, float *x, int w, int h);
-void iio_save_image_double(char *filename, double *x, int w, int h);
-void iio_save_image_uint8_vec(char *filename, uint8_t *x, int w, int h, int pd);
-void iio_save_image_uint16_vec(char *filename, uint16_t *x, int w, int h, int pd);
-void iio_save_image_uint8_matrix_rgb(char *f, unsigned char (**x)[3], int w, int h);
-void iio_save_image_uint8_matrix(char *f, unsigned char **x, int w, int h);
+void iio_save_image_float_vec(const char *filename, float *x, int w, int h, int pd);
+void iio_save_image_float_split(const char *filename, float *x, int w, int h, int pd);
+void iio_save_image_double_vec(const char *filename, double *x, int w, int h, int pd);
+void iio_save_image_float(const char *filename, float *x, int w, int h);
+void iio_save_image_double(const char *filename, double *x, int w, int h);
+void iio_save_image_uint8_vec(const char *filename, uint8_t *x, int w, int h, int pd);
+void iio_save_image_uint16_vec(const char *filename, uint16_t *x, int w, int h, int pd);
+void iio_save_image_uint8_matrix_rgb(const char *f, unsigned char (**x)[3], int w, int h);
+void iio_save_image_uint8_matrix(const char *f, unsigned char **x, int w, int h);
 
 // SAVING FORMATS:
 // (w, h; 1 uint8) => pgm, png, tiff, pfm

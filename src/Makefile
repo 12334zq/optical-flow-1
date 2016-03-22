@@ -63,7 +63,7 @@ LDFLAGS=$(CFLAGS_OPT) $(CFLAGS_EXTRA) $(LDFLAGS_EXTRA) $(OPENCL_LDFLAGS)
 COMPILE.c=$(CC) -c $(CFLAGS) $(CPPFLAGS)
 COMPILE.cpp=$(CXX) -c $(CXXFLAGS) $(CPPFLAGS)
 
-PROGRAMS = brox_spatial brox_temporal
+PROGRAMS = horn_schunck_classic horn_schunck_pyramidal brox_spatial brox_temporal
 
 LIBRARY = libof.a
 
@@ -76,11 +76,13 @@ all: $(LIBRARY) $(PROGRAMS)
 lib: $(LIBRARY)
 
 of_SOURCES_CPP = \
+	horn_schunck_classic.cpp \
+	horn_schunck_pyramidal.cpp \
 	brox_optic_flow_spatial.cpp \
 	brox_optic_flow_temporal.cpp \
-	bicubic_interpolation.cpp \
 	brox_spatial_mask.cpp \
 	brox_temporal_mask.cpp \
+	bicubic_interpolation.cpp \
 	gaussian.cpp \
 	mask.cpp \
 	zoom.cpp \
@@ -95,6 +97,24 @@ of_HEADERS = \
 	zoom.h \
 	xmalloc.h
 of_OBJS =  $(of_SOURCES_CPP:.cpp=.o) $(of_SOURCES_C:.c=.o)
+
+horn_schunck_classic_SOURCES_CPP = \
+	horn_schunck_classic_main.cpp \
+	iio.cpp
+horn_schunck_classic_SOURCES_C =
+horn_schunck_classic_HEADERS = \
+	iio.h
+horn_schunck_classic_OBJS =  $(horn_schunck_classic_SOURCES_CPP:.cpp=.o) $(horn_schunck_classic_SOURCES_C:.c=.o)
+horn_schunck_classic_LIBS = $(LIBRARY) $(LIBS)
+
+horn_schunck_pyramidal_SOURCES_CPP = \
+	horn_schunck_pyramidal_main.cpp \
+	iio.cpp
+horn_schunck_pyramidal_SOURCES_C =
+horn_schunck_pyramidal_HEADERS = \
+	iio.h
+horn_schunck_pyramidal_OBJS =  $(horn_schunck_pyramidal_SOURCES_CPP:.cpp=.o) $(horn_schunck_pyramidal_SOURCES_C:.c=.o)
+horn_schunck_pyramidal_LIBS = $(LIBRARY) $(LIBS)
 
 brox_spatial_SOURCES_CPP = \
 	brox_spatial_main.cpp \
@@ -114,21 +134,32 @@ brox_temporal_HEADERS = \
 brox_temporal_OBJS =  $(brox_temporal_SOURCES_CPP:.cpp=.o) $(brox_temporal_SOURCES_C:.c=.o)
 brox_temporal_LIBS = $(LIBRARY) $(LIBS)
 
-
 SRCS_CPP = \
 	$(of_SOURCES_CPP) \
+	$(horn_schunck_classic_SOURCES_CPP) \
+	$(horn_schunck_pyramidal_SOURCES_CPP) \
 	$(brox_spatial_SOURCES_CPP) \
 	$(brox_temporal_SOURCES_CPP)
 
 SRCS_C = \
 	$(of_SOURCES_C) \
+	$(horn_schunck_classic_SOURCES_C) \
+	$(horn_schunck_pyramidal_SOURCES_C) \
 	$(brox_spatial_SOURCES_C) \
 	$(brox_temporal_SOURCES_C)
 
 HEADERS = \
 	$(of_HEADERS) \
+	$(horn_schunck_classic_HEADERS) \
+	$(horn_schunck_pyramidal_HEADERS) \
 	$(brox_spatial_HEADERS) \
 	$(brox_temporal_HEADERS)
+
+horn_schunck_classic: $(horn_schunck_classic_OBJS) $(LIBRARY)
+	$(LD) -o $@ $^ $(LDFLAGS) $(horn_schunck_classic_LIBS) $(LDADD)
+
+horn_schunck_pyramidal: $(horn_schunck_pyramidal_OBJS) $(LIBRARY)
+	$(LD) -o $@ $^ $(LDFLAGS) $(horn_schunck_pyramidal_LIBS) $(LDADD)
 
 brox_spatial: $(brox_spatial_OBJS) $(LIBRARY)
 	$(LD) -o $@ $^ $(LDFLAGS) $(brox_spatial_LIBS) $(LDADD)
