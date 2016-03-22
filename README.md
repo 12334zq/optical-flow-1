@@ -4,9 +4,11 @@ optical-flow [![Build Status](https://api.travis-ci.org/devernay/optical-flow.pn
 This repository contains optical flow algorithms from the three
 following [IPOL](http://www.ipol.im) publications:
 
+- [Horn-Schunck Optical Flow with a Multi-Scale Strategy](http://www.ipol.im/pub/algo/sm_horn_schunck/) 
 - [Robust Optical Flow Estimation](http://dx.doi.org/10.5201/ipol.2013.21)
 - [TV-L1 Optical Flow Estimation](http://dx.doi.org/10.5201/ipol.2013.26)
 - [Joint TV-L1 Optical Flow and Occlusion Estimation](http://www.ipol.im/pub/pre/118/)
+- [Regularization Strategies for Discontinuity-Preserving Optical Flow Methods](http://dx.doi.org/10.1109/TIP.2016.2526903)
 
 License
 -------
