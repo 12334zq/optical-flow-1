@@ -8,6 +8,6 @@
 // of recovering the status.
 
 /* this function is like "malloc", but it returns always a valid pointer */
-void *xmalloc(size_t size);
+void * xmalloc(size_t size);
 
 #endif /* XMALLOC_H_ */

@@ -26,12 +26,11 @@
  * (see [2] for details)
  *
  **/
-void divergence(
-		const ofpix_t *v1, // x component of the vector field
-		const ofpix_t *v2, // y component of the vector field
-		ofpix_t *div,      // output divergence
-		const int nx,    // image width
-		const int ny     // image height
+void divergence(const ofpix_t *v1, // x component of the vector field
+                const ofpix_t *v2, // y component of the vector field
+                ofpix_t *div, // output divergence
+                const int nx, // image width
+                const int ny // image height
                 );
 
 /**
@@ -40,12 +39,11 @@ void divergence(
  * (see [2] for details)
  *
  **/
-void forward_gradient(
-		const ofpix_t *f, //input image
-		ofpix_t *fx,      //computed x derivative
-		ofpix_t *fy,      //computed y derivative
-		const int nx,   //image width
-		const int ny    //image height
+void forward_gradient(const ofpix_t *f, //input image
+                      ofpix_t *fx, //computed x derivative
+                      ofpix_t *fy, //computed y derivative
+                      const int nx, //image width
+                      const int ny //image height
                       );
 
 
@@ -54,11 +52,10 @@ void forward_gradient(
  * Compute the second order X derivative
  *
  */
-void Dxx(
-    const ofpix_t *I, //input image
-    ofpix_t *Ixx,     //oputput derivative
-    const int nx,   //image width
-    const int ny    //image height
+void Dxx(const ofpix_t *I, //input image
+         ofpix_t *Ixx, //oputput derivative
+         const int nx, //image width
+         const int ny //image height
          );
 
 
@@ -67,11 +64,10 @@ void Dxx(
  * Compute the second order Y derivative
  *
  */
-void Dyy(
-    const ofpix_t *I, //input image
-    ofpix_t *Iyy,     //oputput derivative
-    const int nx,   //image width
-    const int ny    //image height
+void Dyy(const ofpix_t *I, //input image
+         ofpix_t *Iyy, //oputput derivative
+         const int nx, //image width
+         const int ny //image height
          );
 
 
@@ -80,11 +76,10 @@ void Dyy(
  * Compute the second order XY derivative
  *
  */
-void Dxy(
-    const ofpix_t *I, //input image
-    ofpix_t *Ixy,     //oputput derivative
-    const int nx,   //image width
-    const int ny    //image height
+void Dxy(const ofpix_t *I, //input image
+         ofpix_t *Ixy, //oputput derivative
+         const int nx, //image width
+         const int ny //image height
          );
 
 /**
@@ -92,13 +87,12 @@ void Dxy(
  * Function to compute the gradient with centered differences
  *
  */
-void centered_gradient(
-    const ofpix_t *input, //input image
-    ofpix_t *dx,          //computed x derivative
-    ofpix_t *dy,          //computed y derivative
-    const int nx,       //image width
-    const int ny        //image height
-              );
+void centered_gradient(const ofpix_t *input, //input image
+                       ofpix_t *dx, //computed x derivative
+                       ofpix_t *dy, //computed y derivative
+                       const int nx, //image width
+                       const int ny //image height
+                       );
 
 
 /**
@@ -106,15 +100,14 @@ void centered_gradient(
  * Function to compute the 3D gradient with centered differences
  *
  */
-void centered_gradient3(
-    const ofpix_t *input, //input image
-    ofpix_t *dx,          //x derivative
-    ofpix_t *dy,          //y derivative
-    ofpix_t *dz,          //z derivative
-    const int nx,       //image width
-    const int ny,       //image height
-    const int nz        //image depth
-               );
+void centered_gradient3(const ofpix_t *input, //input image
+                        ofpix_t *dx, //x derivative
+                        ofpix_t *dy, //y derivative
+                        ofpix_t *dz, //z derivative
+                        const int nx, //image width
+                        const int ny, //image height
+                        const int nz //image depth
+                        );
 
 #define BOUNDARY_CONDITION_DIRICHLET 0
 #define BOUNDARY_CONDITION_REFLECTING 1
@@ -128,14 +121,13 @@ void centered_gradient3(
  * Convolution with a Gaussian
  *
  */
- void gaussian(
-    ofpix_t *I,             //input/output image
-    const int xdim,       //image width
-    const int ydim,       //image height
-    const double sigma,   //Gaussian sigma
-    const int bc=DEFAULT_BOUNDARY_CONDITION,       //boundary condition
-    const int precision=DEFAULT_GAUSSIAN_WINDOW_SIZE //defines the size of the window
-               );
+void gaussian(ofpix_t *I,   //input/output image
+              const int xdim, //image width
+              const int ydim, //image height
+              const double sigma, //Gaussian sigma
+              const int bc = DEFAULT_BOUNDARY_CONDITION, //boundary condition
+              const int precision = DEFAULT_GAUSSIAN_WINDOW_SIZE //defines the size of the window
+              );
 
 
-#endif
+#endif // ifndef OF_OPERATORS_H

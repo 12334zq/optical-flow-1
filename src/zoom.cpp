@@ -15,95 +15,95 @@
 #define ZOOM_SIGMA_ZERO 0.6
 
 /**
-  *
-  * Compute the size of a zoomed image from the zoom factor
-  *
-**/
-void zoom_size(
-	int nx,      // width of the orignal image
-	int ny,      // height of the orignal image
-	int *nxx,    // width of the zoomed image
-	int *nyy,    // height of the zoomed image
-	float factor // zoom factor between 0 and 1
-)
+ *
+ * Compute the size of a zoomed image from the zoom factor
+ *
+ **/
+void
+zoom_size(int nx, // width of the orignal image
+          int ny, // height of the orignal image
+          int *nxx, // width of the zoomed image
+          int *nyy, // height of the zoomed image
+          double factor // zoom factor between 0 and 1
+          )
 {
-	//compute the new size corresponding to factor
-	//we add 0.5 for rounding off to the closest number
-	*nxx = (int)((float) nx * factor + 0.5);
-	*nyy = (int)((float) ny * factor + 0.5);
+    //compute the new size corresponding to factor
+    //we add 0.5 for rounding off to the closest number
+    *nxx = (int)( nx * factor + 0.5 );
+    *nyy = (int)( ny * factor + 0.5 );
 }
 
 /**
-  *
-  * Downsample an image
-  *
-**/
-void zoom_out(
-	const ofpix_t *I,    // input image
-	ofpix_t *Iout,       // output image
-	const int nx,      // image width
-	const int ny,      // image height
-	const float factor // zoom factor between 0 and 1
-)
+ *
+ * Downsample an image
+ *
+ **/
+void
+zoom_out(const ofpix_t *I, // input image
+         ofpix_t *Iout,  // output image
+         const int nx, // image width
+         const int ny, // image height
+         const double factor // zoom factor between 0 and 1
+         )
 {
-	// temporary working image
-	ofpix_t *Is = new float [nx * ny];
-	for(int i = 0; i < nx * ny; i++)
-		Is[i] = I[i];
+    // temporary working image
+    ofpix_t *Is = new ofpix_t [nx * ny];
 
-	// compute the size of the zoomed image
-	int nxx, nyy;
-	zoom_size(nx, ny, &nxx, &nyy, factor);
+    for (int i = 0; i < nx * ny; i++) {
+        Is[i] = I[i];
+    }
 
-	// compute the Gaussian sigma for smoothing
-	const double sigma = ZOOM_SIGMA_ZERO * sqrt(1.0/(factor*factor) - 1.0);
+    // compute the size of the zoomed image
+    int nxx, nyy;
+    zoom_size(nx, ny, &nxx, &nyy, factor);
 
-	// pre-smooth the image
-	gaussian(Is, nx, ny, sigma);
+    // compute the Gaussian sigma for smoothing
+    const double sigma = ZOOM_SIGMA_ZERO * sqrt(1.0 / (factor * factor) - 1.0);
 
-	// re-sample the image using bicubic interpolation
-	#pragma omp parallel for
-	for (int i1 = 0; i1 < nyy; i1++)
-	for (int j1 = 0; j1 < nxx; j1++)
-	{
-		const float i2  = (float) i1 / factor;
-		const float j2  = (float) j1 / factor;
+    // pre-smooth the image
+    gaussian(Is, nx, ny, sigma);
 
-		float g = bicubic_interpolation_at(Is, j2, i2, nx, ny, false);
-		Iout[i1 * nxx + j1] = g;
-	}
+    // re-sample the image using bicubic interpolation
+    #pragma omp parallel for
+    for (int i1 = 0; i1 < nyy; i1++) {
+        for (int j1 = 0; j1 < nxx; j1++) {
+            const double i2  = i1 / factor;
+            const double j2  = j1 / factor;
+            float g = bicubic_interpolation_at(Is, j2, i2, nx, ny, false);
+            Iout[i1 * nxx + j1] = g;
+        }
+    }
 
-	delete [] Is;
+    delete [] Is;
 }
 
-
 /**
-  *
-  * Function to upsample the image
-  *
-**/
-void zoom_in(
-	const ofpix_t *I, // input image
-	ofpix_t *Iout,    // output image
-	int nx,         // width of the original image
-	int ny,         // height of the original image
-	int nxx,        // width of the zoomed image
-	int nyy         // height of the zoomed image
-)
+ *
+ * Function to upsample the image
+ *
+ **/
+void
+zoom_in(const ofpix_t *I, // input image
+        ofpix_t *Iout, // output image
+        int nx,     // width of the original image
+        int ny,     // height of the original image
+        int nxx,    // width of the zoomed image
+        int nyy     // height of the zoomed image
+        )
 {
-	// compute the zoom factor
-	const double factorx = ((float)nxx / nx);
-	const double factory = ((float)nyy / ny);
+    // compute the zoom factor
+    const double factorx = ( (float)nxx / nx );
+    const double factory = ( (float)nyy / ny );
 
-	// re-sample the image using bicubic interpolation
+    // re-sample the image using bicubic interpolation
 #pragma omp parallel for
-	for (int i1 = 0; i1 < nyy; i1++)
-	for (int j1 = 0; j1 < nxx; j1++)
-	{
-		double i2 =  (float) i1 / factory;
-		double j2 =  (float) j1 / factorx;
-
-		double g = bicubic_interpolation_at(I, j2, i2, nx, ny, false);
-		Iout[i1 * nxx + j1] = g;
-	}
+    for (int i1 = 0; i1 < nyy; i1++) {
+        for (int j1 = 0; j1 < nxx; j1++) {
+            double i2 =  (float) i1 / factory;
+            double j2 =  (float) j1 / factorx;
+            double g = bicubic_interpolation_at(I, j2, i2, nx, ny, false);
+            Iout[i1 * nxx + j1] = g;
+        }
+    }
 }
+

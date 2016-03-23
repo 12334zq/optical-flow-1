@@ -16,17 +16,16 @@
  * Compute the coefficients of the divergence term
  *
  */
-void brox_temporal_psi_divergence(
-    const ofpix_t *psi, //robust functional
-    ofpix_t *psi1,      //coefficients of divergence
-    ofpix_t *psi2,      //coefficients of divergence
-    ofpix_t *psi3,      //coefficients of divergence
-    ofpix_t *psi4,      //coefficients of divergence    
-    ofpix_t *psi5,      //coefficients of divergence 
-    ofpix_t *psi6,      //coefficients of divergence 
-    const int nx,     //image width
-    const int ny,     //image height
-    const int nz      //image depth
+void brox_temporal_psi_divergence(const ofpix_t *psi, //robust functional
+                                  ofpix_t *psi1, //coefficients of divergence
+                                  ofpix_t *psi2, //coefficients of divergence
+                                  ofpix_t *psi3, //coefficients of divergence
+                                  ofpix_t *psi4, //coefficients of divergence
+                                  ofpix_t *psi5, //coefficients of divergence
+                                  ofpix_t *psi6, //coefficients of divergence
+                                  const int nx, //image width
+                                  const int ny, //image height
+                                  const int nz //image depth
                                   );
 
 
@@ -35,20 +34,19 @@ void brox_temporal_psi_divergence(
  * Compute the divergence of the optical flow
  *
  */
-void brox_temporal_divergence_u(
-    const ofpix_t *u,    //x component of optical flow
-    const ofpix_t *v,    //y component of optical flow
-    const ofpix_t *psi1, //coefficients of divergence
-    const ofpix_t *psi2, //coefficients of divergence
-    const ofpix_t *psi3, //coefficients of divergence
-    const ofpix_t *psi4, //coefficients of divergence
-    const ofpix_t *psi5, //coefficients of divergence
-    const ofpix_t *psi6, //coefficients of divergence
-    ofpix_t *div_u,      //computed divergence for u
-    ofpix_t *div_v,      //computed divergence for v
-    const int nx,      //image width 
-    const int ny,      //image height
-    const int nz       //image depth
+void brox_temporal_divergence_u(const ofpix_t *u,    //x component of optical flow
+                                const ofpix_t *v, //y component of optical flow
+                                const ofpix_t *psi1, //coefficients of divergence
+                                const ofpix_t *psi2, //coefficients of divergence
+                                const ofpix_t *psi3, //coefficients of divergence
+                                const ofpix_t *psi4, //coefficients of divergence
+                                const ofpix_t *psi5, //coefficients of divergence
+                                const ofpix_t *psi6, //coefficients of divergence
+                                ofpix_t *div_u, //computed divergence for u
+                                ofpix_t *div_v, //computed divergence for v
+                                const int nx, //image width
+                                const int ny, //image height
+                                const int nz //image depth
                                 );
 
 

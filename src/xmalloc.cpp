@@ -15,13 +15,17 @@
 // of recovering the status.
 
 /* this function is like "malloc", but it returns always a valid pointer */
-void *xmalloc(size_t size) {
+void *
+xmalloc(size_t size)
+{
+    //Locate memory
+    void *p = malloc(size);
 
-	//Locate memory
-	void *p = malloc(size);
-	if (!p)
-		//If there is no memory, abort
-		exit(fprintf(stderr, "out of memory\n"));
-	return p;
+    if (!p) {
+        //If there is no memory, abort
+        exit( fprintf(stderr, "out of memory\n") );
+    }
+
+    return p;
 }
 
