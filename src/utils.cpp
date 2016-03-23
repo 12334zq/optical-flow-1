@@ -331,6 +331,84 @@ image_normalization_2(const ofpix_t *I1,      //input image 1
  *
  **/
 void
+image_normalization_2_color (     const ofpix_t *I1,    //input image 1
+                                  const ofpix_t *I2,    //input image 2
+                                  ofpix_t *I1n, //normalized output image 1
+                                  ofpix_t *I2n, //normalized output image 2
+                                  int size,     //size of the image
+                                  int nz        //number of color channels in the images
+                                  )
+{
+    ofpix_t max, min;
+
+    // Initial min and max values of the images
+    for (int index_multichannel = 0; index_multichannel < nz; index_multichannel++) {
+        if (I1[index_multichannel] > I2[index_multichannel]) {
+            max = I1[index_multichannel];
+        } else {
+            max = I2[index_multichannel];
+        }
+
+        if (I1[index_multichannel] < I2[index_multichannel]) {
+            min = I1[index_multichannel];
+        } else {
+            min = I2[index_multichannel];
+        }
+
+
+        //compute the max and min values of the images
+        for (int i = nz; i < size; i += nz) {
+            int real_index = i + index_multichannel;
+
+            if (I1[real_index] > max) {
+                max = I1[real_index];
+            }
+
+            if (I1[real_index] < min) {
+                min = I1[real_index];
+            }
+
+            if (I2[real_index] > max) {
+                max = I2[real_index];
+            }
+
+            if (I2[real_index] < min) {
+                min = I2[real_index];
+            }
+        }
+
+
+        //compute the global max and min
+        ofpix_t den = max - min;
+
+        if (den > 0) {
+            //normalize the images between 0 and 255
+#pragma omp parallel for
+            for (int index_image = 0; index_image < size; index_image += nz) {
+                int real_index = index_image + index_multichannel;
+
+                I1n[real_index] = 255.0 * (I1[real_index] - min) / den;
+                I2n[real_index] = 255.0 * (I2[real_index] - min) / den;
+            }
+        } else   {
+            //copy the original data
+#pragma omp parallel for
+            for (int index_image = 0; index_image < size; index_image += nz) {
+                int real_index = index_image + index_multichannel;
+
+                I1n[real_index] = I1[real_index];
+                I2n[real_index] = I2[real_index];
+            }
+        }
+    }
+} // image_normalization_2_color
+
+/**
+ *
+ * Function to normalize the images between 0 and 255
+ *
+ **/
+void
 image_normalization_3(ofpix_t *I0,
                       ofpix_t *I1,
                       ofpix_t *I2,

@@ -125,7 +125,7 @@ brox_temporal_psi_divergence(const ofpix_t *psi, //robust functional
             psi5[k] = 0.5 * (psi[k - df] + psi[k]);
             psi6[k] = 0;
         }
-    } else   {
+    } else {
         for (int i = 0; i < df; i++) {
             psi5[i] = psi6[i] = 0;
         }

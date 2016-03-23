@@ -82,7 +82,7 @@ read_images(char *argv[],
         if ( correct && ( i == 0) ) {
             nx = nxx; ny = nyy;
             *I = new ofpix_t[nx * ny * frames];
-        } else   {
+        } else {
             correct = correct && nx == nxx && ny == nyy;
         }
 
@@ -224,7 +224,7 @@ main(int argc,
             delete []I;
             delete []u;
             delete []v;
-        } else   {
+        } else {
             cerr << "Cannot read the images or the size of the images are not equal" << endl;
         }
     }

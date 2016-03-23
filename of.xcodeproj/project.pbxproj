@@ -62,6 +62,20 @@
 		1E0E57F61CA2D19100C340AE /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED70DC51CA2BD1300707652 /* libtiff.dylib */; };
 		1E0E57F71CA2D19100C340AE /* libof.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED70D4A1CA2A5EF00707652 /* libof.a */; };
 		1E0E57FD1CA2D1A000C340AE /* tvl1occflow_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ED70D931CA2BB7800707652 /* tvl1occflow_main.cpp */; };
+		1E1DF69E1CA2FDC200AAABB5 /* tvl1occflow_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ED70D931CA2BB7800707652 /* tvl1occflow_main.cpp */; };
+		1E1DF69F1CA2FDC200AAABB5 /* iio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ED70D911CA2BB7800707652 /* iio.cpp */; };
+		1E1DF6A01CA2FDC200AAABB5 /* xmalloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ED70D941CA2BB7800707652 /* xmalloc.cpp */; };
+		1E1DF6A21CA2FDC200AAABB5 /* libjpeg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED70DC31CA2BD1300707652 /* libjpeg.dylib */; };
+		1E1DF6A31CA2FDC200AAABB5 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED70DC41CA2BD1300707652 /* libpng.dylib */; };
+		1E1DF6A41CA2FDC200AAABB5 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED70DC51CA2BD1300707652 /* libtiff.dylib */; };
+		1E1DF6A51CA2FDC200AAABB5 /* libof.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED70D4A1CA2A5EF00707652 /* libof.a */; };
+		1E1DF6AD1CA2FDE600AAABB5 /* robust_expo_methods_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DF6AB1CA2FDE200AAABB5 /* robust_expo_methods_main.cpp */; };
+		1E1DF6B01CA2FDF600AAABB5 /* robust_expo_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DF6AE1CA2FDF600AAABB5 /* robust_expo_methods.cpp */; };
+		1E1DF6B11CA2FDF600AAABB5 /* robust_expo_methods.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E1DF6AF1CA2FDF600AAABB5 /* robust_expo_methods.h */; };
+		1E1DF6B61CA3030E00AAABB5 /* robust_expo_generic_tensor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DF6B21CA3030E00AAABB5 /* robust_expo_generic_tensor.cpp */; };
+		1E1DF6B71CA3030E00AAABB5 /* robust_expo_generic_tensor.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E1DF6B31CA3030E00AAABB5 /* robust_expo_generic_tensor.h */; };
+		1E1DF6B81CA3030E00AAABB5 /* robust_expo_smoothness.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DF6B41CA3030E00AAABB5 /* robust_expo_smoothness.cpp */; };
+		1E1DF6B91CA3030E00AAABB5 /* robust_expo_smoothness.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E1DF6B51CA3030E00AAABB5 /* robust_expo_smoothness.h */; };
 		1ED70D6A1CA2A62B00707652 /* bicubic_interpolation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ED70D4E1CA2A62B00707652 /* bicubic_interpolation.cpp */; };
 		1ED70D6B1CA2A62B00707652 /* bicubic_interpolation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ED70D4F1CA2A62B00707652 /* bicubic_interpolation.h */; };
 		1ED70D6C1CA2A62B00707652 /* brox_optic_flow_spatial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ED70D501CA2A62B00707652 /* brox_optic_flow_spatial.cpp */; };
@@ -197,6 +211,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		1E1DF6A61CA2FDC200AAABB5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		1ED70D9F1CA2BB9200707652 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -214,6 +237,14 @@
 		1E0E57DB1CA2D16200C340AE /* horn_schunck_pyramidal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = horn_schunck_pyramidal; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E0E57EC1CA2D17D00C340AE /* tvl1flow */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tvl1flow; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E0E57FC1CA2D19100C340AE /* tvl1occflow */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tvl1occflow; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E1DF6AA1CA2FDC200AAABB5 /* robust_expo_methods */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = robust_expo_methods; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E1DF6AB1CA2FDE200AAABB5 /* robust_expo_methods_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = robust_expo_methods_main.cpp; path = src/robust_expo_methods_main.cpp; sourceTree = "<group>"; };
+		1E1DF6AE1CA2FDF600AAABB5 /* robust_expo_methods.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = robust_expo_methods.cpp; path = src/robust_expo_methods.cpp; sourceTree = SOURCE_ROOT; };
+		1E1DF6AF1CA2FDF600AAABB5 /* robust_expo_methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = robust_expo_methods.h; path = src/robust_expo_methods.h; sourceTree = SOURCE_ROOT; };
+		1E1DF6B21CA3030E00AAABB5 /* robust_expo_generic_tensor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = robust_expo_generic_tensor.cpp; path = src/robust_expo_generic_tensor.cpp; sourceTree = SOURCE_ROOT; };
+		1E1DF6B31CA3030E00AAABB5 /* robust_expo_generic_tensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = robust_expo_generic_tensor.h; path = src/robust_expo_generic_tensor.h; sourceTree = SOURCE_ROOT; };
+		1E1DF6B41CA3030E00AAABB5 /* robust_expo_smoothness.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = robust_expo_smoothness.cpp; path = src/robust_expo_smoothness.cpp; sourceTree = SOURCE_ROOT; };
+		1E1DF6B51CA3030E00AAABB5 /* robust_expo_smoothness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = robust_expo_smoothness.h; path = src/robust_expo_smoothness.h; sourceTree = SOURCE_ROOT; };
 		1ED70D4A1CA2A5EF00707652 /* libof.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libof.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ED70D4E1CA2A62B00707652 /* bicubic_interpolation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bicubic_interpolation.cpp; path = src/bicubic_interpolation.cpp; sourceTree = SOURCE_ROOT; };
 		1ED70D4F1CA2A62B00707652 /* bicubic_interpolation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bicubic_interpolation.h; path = src/bicubic_interpolation.h; sourceTree = SOURCE_ROOT; };
@@ -252,7 +283,6 @@
 		1ED70D931CA2BB7800707652 /* tvl1occflow_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tvl1occflow_main.cpp; path = src/tvl1occflow_main.cpp; sourceTree = "<group>"; };
 		1ED70D941CA2BB7800707652 /* xmalloc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xmalloc.cpp; path = src/xmalloc.cpp; sourceTree = "<group>"; };
 		1ED70DA11CA2BB9200707652 /* brox_spatial */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = brox_spatial; sourceTree = BUILT_PRODUCTS_DIR; };
-		1ED70DA31CA2BB9300707652 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		1ED70DC31CA2BD1300707652 /* libjpeg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.dylib; path = /usr/local/lib/libjpeg.dylib; sourceTree = "<absolute>"; };
 		1ED70DC41CA2BD1300707652 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = /usr/local/lib/libpng.dylib; sourceTree = "<absolute>"; };
 		1ED70DC51CA2BD1300707652 /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtiff.dylib; path = /usr/local/lib/libtiff.dylib; sourceTree = "<absolute>"; };
@@ -314,6 +344,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1E1DF6A11CA2FDC200AAABB5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E1DF6A21CA2FDC200AAABB5 /* libjpeg.dylib in Frameworks */,
+				1E1DF6A31CA2FDC200AAABB5 /* libpng.dylib in Frameworks */,
+				1E1DF6A41CA2FDC200AAABB5 /* libtiff.dylib in Frameworks */,
+				1E1DF6A51CA2FDC200AAABB5 /* libof.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1ED70D471CA2A5EF00707652 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -335,15 +376,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1E8586941CA2A54500FF8BA1 = {
+		1E1DF69B1CA2FDB000AAABB5 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
 				1ED70DC31CA2BD1300707652 /* libjpeg.dylib */,
 				1ED70DC41CA2BD1300707652 /* libpng.dylib */,
 				1ED70DC51CA2BD1300707652 /* libtiff.dylib */,
+			);
+			name = Libs;
+			sourceTree = "<group>";
+		};
+		1E8586941CA2A54500FF8BA1 = {
+			isa = PBXGroup;
+			children = (
 				1ED70D451CA2A5BE00707652 /* progs */,
 				1E85869F1CA2A54500FF8BA1 /* of */,
-				1ED70DA21CA2BB9300707652 /* brox_spatial_main */,
+				1E1DF69B1CA2FDB000AAABB5 /* Libs */,
 				1E85869E1CA2A54500FF8BA1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -358,6 +406,7 @@
 				1E0E57DB1CA2D16200C340AE /* horn_schunck_pyramidal */,
 				1E0E57EC1CA2D17D00C340AE /* tvl1flow */,
 				1E0E57FC1CA2D19100C340AE /* tvl1occflow */,
+				1E1DF6AA1CA2FDC200AAABB5 /* robust_expo_methods */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -374,12 +423,18 @@
 				1ED70D541CA2A62B00707652 /* brox_spatial_mask.h */,
 				1ED70D551CA2A62B00707652 /* brox_temporal_mask.cpp */,
 				1ED70D561CA2A62B00707652 /* brox_temporal_mask.h */,
+				1E1DF6B21CA3030E00AAABB5 /* robust_expo_generic_tensor.cpp */,
+				1E1DF6B31CA3030E00AAABB5 /* robust_expo_generic_tensor.h */,
 				1ED70D571CA2A62B00707652 /* horn_schunck_classic.cpp */,
 				1ED70D581CA2A62B00707652 /* horn_schunck_pyramidal.cpp */,
 				1ED70D591CA2A62B00707652 /* horn_schunck.h */,
 				1ED70D5A1CA2A62B00707652 /* of.h */,
 				1ED70D5B1CA2A62B00707652 /* operators.cpp */,
 				1ED70D5C1CA2A62B00707652 /* operators.h */,
+				1E1DF6AE1CA2FDF600AAABB5 /* robust_expo_methods.cpp */,
+				1E1DF6AF1CA2FDF600AAABB5 /* robust_expo_methods.h */,
+				1E1DF6B41CA3030E00AAABB5 /* robust_expo_smoothness.cpp */,
+				1E1DF6B51CA3030E00AAABB5 /* robust_expo_smoothness.h */,
 				1ED70D5D1CA2A62B00707652 /* tvl1flow.cpp */,
 				1ED70D5E1CA2A62B00707652 /* tvl1flow.h */,
 				1ED70D5F1CA2A62B00707652 /* tvl1occflow_constants.h */,
@@ -400,6 +455,7 @@
 		1ED70D451CA2A5BE00707652 /* progs */ = {
 			isa = PBXGroup;
 			children = (
+				1E1DF6AB1CA2FDE200AAABB5 /* robust_expo_methods_main.cpp */,
 				1ED70D8D1CA2BB7800707652 /* brox_spatial_main.cpp */,
 				1ED70D8E1CA2BB7800707652 /* brox_temporal_main.cpp */,
 				1ED70D8F1CA2BB7800707652 /* horn_schunck_classic_main.cpp */,
@@ -412,14 +468,6 @@
 			name = progs;
 			sourceTree = "<group>";
 		};
-		1ED70DA21CA2BB9300707652 /* brox_spatial_main */ = {
-			isa = PBXGroup;
-			children = (
-				1ED70DA31CA2BB9300707652 /* main.cpp */,
-			);
-			path = brox_spatial_main;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -430,6 +478,7 @@
 				1ED70D891CA2B25800707652 /* utils.h in Headers */,
 				1ED70D701CA2A62B00707652 /* brox_spatial_mask.h in Headers */,
 				1ED70D6B1CA2A62B00707652 /* bicubic_interpolation.h in Headers */,
+				1E1DF6B11CA2FDF600AAABB5 /* robust_expo_methods.h in Headers */,
 				1ED70D781CA2A62B00707652 /* operators.h in Headers */,
 				1ED70D751CA2A62B00707652 /* horn_schunck.h in Headers */,
 				1ED70D7F1CA2A62B00707652 /* tvl1occflow_tv_rof_box.h in Headers */,
@@ -439,7 +488,9 @@
 				1ED70D7B1CA2A62B00707652 /* tvl1occflow_constants.h in Headers */,
 				1ED70D761CA2A62B00707652 /* of.h in Headers */,
 				1ED70D851CA2A62B00707652 /* zoom.h in Headers */,
+				1E1DF6B71CA3030E00AAABB5 /* robust_expo_generic_tensor.h in Headers */,
 				1ED70D7A1CA2A62B00707652 /* tvl1flow.h in Headers */,
+				1E1DF6B91CA3030E00AAABB5 /* robust_expo_smoothness.h in Headers */,
 				1ED70D811CA2A62B00707652 /* tvl1occflow.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -532,6 +583,23 @@
 			productReference = 1E0E57FC1CA2D19100C340AE /* tvl1occflow */;
 			productType = "com.apple.product-type.tool";
 		};
+		1E1DF69C1CA2FDC200AAABB5 /* robust_expo_methods */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E1DF6A71CA2FDC200AAABB5 /* Build configuration list for PBXNativeTarget "robust_expo_methods" */;
+			buildPhases = (
+				1E1DF69D1CA2FDC200AAABB5 /* Sources */,
+				1E1DF6A11CA2FDC200AAABB5 /* Frameworks */,
+				1E1DF6A61CA2FDC200AAABB5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = robust_expo_methods;
+			productName = brox_spatial_main;
+			productReference = 1E1DF6AA1CA2FDC200AAABB5 /* robust_expo_methods */;
+			productType = "com.apple.product-type.tool";
+		};
 		1ED70D491CA2A5EF00707652 /* of */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1ED70D4B1CA2A5EF00707652 /* Build configuration list for PBXNativeTarget "of" */;
@@ -604,6 +672,7 @@
 				1E0E57CD1CA2D16200C340AE /* horn_schunck_pyramidal */,
 				1E0E57DE1CA2D17D00C340AE /* tvl1flow */,
 				1E0E57EE1CA2D19100C340AE /* tvl1occflow */,
+				1E1DF69C1CA2FDC200AAABB5 /* robust_expo_methods */,
 				1ED70DAC1CA2BBD800707652 /* all */,
 			);
 		};
@@ -660,6 +729,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1E1DF69D1CA2FDC200AAABB5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E1DF69E1CA2FDC200AAABB5 /* tvl1occflow_main.cpp in Sources */,
+				1E1DF69F1CA2FDC200AAABB5 /* iio.cpp in Sources */,
+				1E1DF6AD1CA2FDE600AAABB5 /* robust_expo_methods_main.cpp in Sources */,
+				1E1DF6A01CA2FDC200AAABB5 /* xmalloc.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1ED70D461CA2A5EF00707652 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -674,10 +754,13 @@
 				1ED70D6D1CA2A62B00707652 /* brox_optic_flow_temporal.cpp in Sources */,
 				1ED70D6C1CA2A62B00707652 /* brox_optic_flow_spatial.cpp in Sources */,
 				1ED70D771CA2A62B00707652 /* operators.cpp in Sources */,
+				1E1DF6B61CA3030E00AAABB5 /* robust_expo_generic_tensor.cpp in Sources */,
 				1ED70D731CA2A62B00707652 /* horn_schunck_classic.cpp in Sources */,
 				1ED70D7E1CA2A62B00707652 /* tvl1occflow_tv_rof_box.cpp in Sources */,
 				1ED70D841CA2A62B00707652 /* zoom.cpp in Sources */,
 				1ED70D741CA2A62B00707652 /* horn_schunck_pyramidal.cpp in Sources */,
+				1E1DF6B81CA3030E00AAABB5 /* robust_expo_smoothness.cpp in Sources */,
+				1E1DF6B01CA2FDF600AAABB5 /* robust_expo_methods.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -882,6 +965,36 @@
 			};
 			name = Release;
 		};
+		1E1DF6A81CA2FDC200AAABB5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(LOCAL)/include/libpng16",
+					"$(LOCAL)/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL)/lib",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1E1DF6A91CA2FDC200AAABB5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(LOCAL)/include/libpng16",
+					"$(LOCAL)/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL)/lib",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		1E8586A21CA2A54500FF8BA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1068,6 +1181,15 @@
 			buildConfigurations = (
 				1E0E57FA1CA2D19100C340AE /* Debug */,
 				1E0E57FB1CA2D19100C340AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E1DF6A71CA2FDC200AAABB5 /* Build configuration list for PBXNativeTarget "robust_expo_methods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E1DF6A81CA2FDC200AAABB5 /* Debug */,
+				1E1DF6A91CA2FDC200AAABB5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

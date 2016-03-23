@@ -30,7 +30,7 @@ neumann_bc (int x,
     if (x < 0) {
         x = 0;
         *out = true;
-    } else if (x >= nx)     {
+    } else if (x >= nx) {
         x = nx - 1;
         *out = true;
     }
@@ -55,7 +55,7 @@ periodic_bc (int x,
 
         x = ixx % nx;
         *out = true;
-    } else if (x >= nx)     {
+    } else if (x >= nx) {
         x = x % nx;
         *out = true;
     }
@@ -85,7 +85,7 @@ symmetric_bc (int x,
             x = xx % border;
         }
         *out = true;
-    } else if (x >= nx)     {
+    } else if (x >= nx) {
         const int border = nx - 1;
         const int n = (int) (x / border) % 2;
 

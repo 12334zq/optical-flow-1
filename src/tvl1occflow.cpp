@@ -121,7 +121,7 @@ choosed_g(ofpix_t *g_fun,
 
     case 2:
 
-        centered_gradient(I, Ix, Iy, nx, ny);
+        centered_gradient(I, Ix, Iy, nx, ny, 1);
 #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             double gggrad = sqrt(Ix[i] * Ix[i] + Iy[i] * Iy[i]);
@@ -196,8 +196,8 @@ Dual_TVL1_optic_flow(ofpix_t *I_1,              // Previous frame to source Imag
     //store g_function, used in the regularizing term (for the optical flow and for the occlusion map chi)
     choosed_g(g_function, G_CHOICE, filtI0, G_FACTOR, nx, ny);
 
-    centered_gradient(I1, I1x, I1y, nx, ny);
-    centered_gradient(I_1, I_1x, I_1y, nx, ny);
+    centered_gradient(I1, I1x, I1y, nx, ny, 1);
+    centered_gradient(I_1, I_1x, I_1y, nx, ny, 1);
 
     // initialization of variables
     for (int i = 0; i < size; i++) {
@@ -264,7 +264,7 @@ Dual_TVL1_optic_flow(ofpix_t *I_1,              // Previous frame to source Imag
         //n = epsilon - epsilon;
         //n = 0;
         while (error > epsilon  && n < EXT_MAX_ITERATIONS) { //comentado para pruebas, porque para probar hay que tener un numero fijo de iteraciones
-        //while (n < EXT_MAX_ITERATIONS) {
+            //while (n < EXT_MAX_ITERATIONS) {
             n++;
 
             //Relaxation steps

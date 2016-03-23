@@ -81,7 +81,7 @@ Dual_TVL1_optic_flow(ofpix_t *I0, // source image
     ofpix_t *u2x    = new ofpix_t[size];
     ofpix_t *u2y    = new ofpix_t[size];
 
-    centered_gradient(I1, I1x, I1y, nx, ny);
+    centered_gradient(I1, I1x, I1y, nx, ny, 1);
 
     // initialization of p
     for (int i = 0; i < size; i++) {
@@ -117,17 +117,17 @@ Dual_TVL1_optic_flow(ofpix_t *I0, // source image
 #pragma omp parallel for
             for (int i = 0; i < size; i++) {
                 const double rho = rho_c[i]
-                                  + (I1wx[i] * u1[i] + I1wy[i] * u2[i]);
+                                   + (I1wx[i] * u1[i] + I1wy[i] * u2[i]);
                 double d1, d2;
 
                 if (rho < -l_t * grad[i]) {
                     d1 = l_t * I1wx[i];
                     d2 = l_t * I1wy[i];
-                } else   {
+                } else {
                     if (rho > l_t * grad[i]) {
                         d1 = -l_t * I1wx[i];
                         d2 = -l_t * I1wy[i];
-                    } else   {
+                    } else {
                         if (grad[i] < GRAD_IS_ZERO) {
                             d1 = d2 = 0;
                         } else {

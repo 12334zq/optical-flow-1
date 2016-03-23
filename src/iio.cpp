@@ -1336,12 +1336,11 @@ recover_broken_pixels_float(float *clear,
     clear[pd * i + l] = broken[n * l + i];
 }
 
-
 static void
 recover_broken_pixels_double(double *clear,
-                            double *broken,
-                            int n,
-                            int pd)
+                             double *broken,
+                             int n,
+                             int pd)
 {
     //fprintf(stderr, "unbreaking %d %d-dimensional vectors\n", n, pd);
     FORL(pd) FORI(n)
@@ -1593,15 +1592,15 @@ read_whole_tiff(struct iio_image *x,
             fmt_iio = IIO_TYPE_UINT1;
         } else if (2 == bps) {
             fmt_iio = IIO_TYPE_UINT2;
-        } else if (4 == bps)                                           {
+        } else if (4 == bps) {
             fmt_iio = IIO_TYPE_UINT4;
-        } else if (8 == bps)                                                                                            {
+        } else if (8 == bps) {
             fmt_iio = IIO_TYPE_UINT8;
-        } else if (16 == bps)                                                                                                                                             {
+        } else if (16 == bps) {
             fmt_iio = IIO_TYPE_UINT16;
-        } else if (32 == bps)                                                                                                                                                                                                {
+        } else if (32 == bps) {
             fmt_iio = IIO_TYPE_UINT32;
-        } else                                                                                                                                                                                                                                                   {
+        } else {
             fail("unrecognized UINT type of size %d bits", bps);
         }
     } else if (fmt == SAMPLEFORMAT_INT) {
@@ -1609,9 +1608,9 @@ read_whole_tiff(struct iio_image *x,
             fmt_iio = IIO_TYPE_INT8;
         } else if (16 == bps) {
             fmt_iio = IIO_TYPE_INT16;
-        } else if (32 == bps)                                            {
+        } else if (32 == bps) {
             fmt_iio = IIO_TYPE_INT32;
-        } else                                                                                              {
+        } else {
             fail("unrecognized INT type of size %d bits", bps);
         }
     } else if (fmt == SAMPLEFORMAT_IEEEFP) {
@@ -1620,7 +1619,7 @@ read_whole_tiff(struct iio_image *x,
             fmt_iio = IIO_TYPE_FLOAT;
         } else if (64 == bps) {
             fmt_iio = IIO_TYPE_DOUBLE;
-        } else                                             {
+        } else {
             fail("unrecognized FLOAT type of size %d bits", bps);
         }
     } else {
@@ -3925,10 +3924,10 @@ iio_save_image_double_vec(const char *filename,
 
 void
 iio_save_image_double_split(const char *filename,
-                           double *data,
-                           int w,
-                           int h,
-                           int pd)
+                            double *data,
+                            int w,
+                            int h,
+                            int pd)
 {
     double *rdata = (double *)xmalloc(w * h * pd * sizeof *rdata);
 

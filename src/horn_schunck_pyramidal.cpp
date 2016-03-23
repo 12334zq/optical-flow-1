@@ -54,9 +54,9 @@ sor_iteration(const ofpix_t *Au, // constant part of the numerator of u
 
     // compute the divergence
     const double ula = 1. / 12. * (u[p1] + u[p2] + u[p3] + u[p4]) +
-                      1. / 6.  * (u[p5] + u[p6] + u[p7] + u[p8]);
+                       1. / 6.  * (u[p5] + u[p6] + u[p7] + u[p8]);
     const double vla = 1. / 12. * (v[p1] + v[p2] + v[p3] + v[p4]) +
-                      1. / 6.  * (v[p5] + v[p6] + v[p7] + v[p8]);
+                       1. / 6.  * (v[p5] + v[p6] + v[p7] + v[p8]);
 
     // store the previous values
     const ofpix_t uk = u[p];
@@ -111,7 +111,7 @@ horn_schunck_optical_flow(const ofpix_t *I1, // source image
     ofpix_t *D    = new ofpix_t[size]; // common numerator of u and v
 
     // compute the gradient of the second image
-    centered_gradient(I2, I2x, I2y, nx, ny);
+    centered_gradient(I2, I2x, I2y, nx, ny, 1);
 
     // iterative approximation to the Taylor expansions
     for (int n = 0; n < warps; n++) {

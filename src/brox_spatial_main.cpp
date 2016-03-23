@@ -191,7 +191,7 @@ main(int argc,
             delete []u;
             delete []v;
             delete []f;
-        } else   {
+        } else {
             cerr << "Cannot read the images or the size of the images are not equal" << endl;
         }
     }

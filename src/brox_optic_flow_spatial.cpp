@@ -157,9 +157,9 @@ sor_iteration(const ofpix_t *Au, //constant part of the numerator of u
 
     //compute the divergence part of the numerator (equation (10))
     const double div_du = psi1[k] * du[k + i1] + psi2[k] * du[k - i0] +
-                         psi3[k] * du[k + j1] + psi4[k] * du[k - j0];
+                          psi3[k] * du[k + j1] + psi4[k] * du[k - j0];
     const double div_dv = psi1[k] * dv[k + i1] + psi2[k] * dv[k - i0] +
-                         psi3[k] * dv[k + j1] + psi4[k] * dv[k - j0];
+                          psi3[k] * dv[k + j1] + psi4[k] * dv[k - j0];
     const double duk = du[k];
     const double dvk = dv[k];
 
@@ -232,13 +232,13 @@ brox_optic_flow(   const ofpix_t *I1,//first image
     ofpix_t *psi4  = new ofpix_t[size];
 
     //compute the gradient of the images
-    centered_gradient(I1, I1x, I1y, nx, ny);
-    centered_gradient(I2, I2x, I2y, nx, ny);
+    centered_gradient(I1, I1x, I1y, nx, ny, 1);
+    centered_gradient(I2, I2x, I2y, nx, ny, 1);
 
     //compute second order derivatives
-    Dxx(I2, I2xx, nx, ny);
-    Dyy(I2, I2yy, nx, ny);
-    Dxy(I2, I2xy, nx, ny);
+    Dxx(I2, I2xx, nx, ny, 1);
+    Dyy(I2, I2yy, nx, ny, 1);
+    Dxy(I2, I2xy, nx, ny, 1);
 
     //outer iterations loop
     for (int no = 0; no < outer_iter; no++) {
@@ -251,8 +251,8 @@ brox_optic_flow(   const ofpix_t *I1,//first image
         bicubic_interpolation_warp(I2yy, u, v, I2wyy, nx, ny, true);
 
         //compute the flow gradient
-        centered_gradient(u, ux, uy, nx, ny);
-        centered_gradient(v, vx, vy, nx, ny);
+        centered_gradient(u, ux, uy, nx, ny, 1);
+        centered_gradient(v, vx, vy, nx, ny, 1);
 
         //compute robust function Psi for the smoothness term
         psi_smooth(ux, uy, vx, vy, psis, nx, ny);

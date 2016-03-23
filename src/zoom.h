@@ -36,6 +36,18 @@ void zoom_out(const ofpix_t *I,    // input image
               const double factor // zoom factor between 0 and 1
               );
 
+/**
+ *
+ * Downsample an image
+ *
+ **/
+void zoom_out_color(const ofpix_t *I, // input image
+                    ofpix_t *Iout, // output image
+                    const int nx, // image width
+                    const int ny, // image height
+                    const int nz,   // number of color channels in image
+                    const double factor // zoom factor between 0 and 1
+                    );
 
 /**
  *

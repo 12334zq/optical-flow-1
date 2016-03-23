@@ -8,7 +8,6 @@
 
 #include "brox_spatial_mask.h"
 
-
 /**
  *
  * Compute the coefficients of the divergence term

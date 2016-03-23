@@ -31,6 +31,19 @@ void image_normalization_2(const ofpix_t *I1,   //input image 1
                            int size           //size of the image
                            );
 
+/**
+ *
+ * Function to normalize the images between 0 and 255
+ *
+ **/
+void image_normalization_2_color(const ofpix_t *I1,   //input image 1
+                                 const ofpix_t *I2,   //input image 2
+                                 ofpix_t       *I1n,  //normalized output image 1
+                                 ofpix_t       *I2n,  //normalized output image 2
+                                 int size,      //size of the image
+                                 int nz     //number of color channels in the images
+                                 );
+
 /*
  * Function name: image_normalization_3
  * Author:

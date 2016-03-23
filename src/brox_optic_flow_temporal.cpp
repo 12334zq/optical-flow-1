@@ -154,11 +154,11 @@ sor_iteration(const ofpix_t *Au, //constant part of the numerator of u
 
     //compute the divergence part of the numerator
     const double div_du = psi1[k] * du[k + dy1] + psi2[k] * du[k - dy0] +
-                         psi3[k] * du[k + dx1] + psi4[k] * du[k - dx0] +
-                         psi5[k] * du[k - df0] + psi6[k] * du[k + df1];
+                          psi3[k] * du[k + dx1] + psi4[k] * du[k - dx0] +
+                          psi5[k] * du[k - df0] + psi6[k] * du[k + df1];
     const double div_dv = psi1[k] * dv[k + dy1] + psi2[k] * dv[k - dy0] +
-                         psi3[k] * dv[k + dx1] + psi4[k] * dv[k - dx0] +
-                         psi5[k] * dv[k - df0] + psi6[k] * dv[k + df1];
+                          psi3[k] * dv[k + dx1] + psi4[k] * dv[k - dx0] +
+                          psi5[k] * dv[k - df0] + psi6[k] * dv[k + df1];
     const double duk = du[k];
     const double dvk = dv[k];
 
@@ -341,14 +341,14 @@ brox_optic_flow(   const ofpix_t *I,//sequence of images
 
     //compute the gradient of the images
     for (int f = 0; f < frames; f++) {
-        centered_gradient(&I[f * df], &Ix[f * df], &Iy[f * df], nx, ny);
+        centered_gradient(&I[f * df], &Ix[f * df], &Iy[f * df], nx, ny, 1);
     }
 
     //compute second order derivatives
     for (int f = 0; f < nz; f++) {
-        Dxx(&I[df * (f + 1)], &Ixx[f * df], nx, ny);
-        Dyy(&I[df * (f + 1)], &Iyy[f * df], nx, ny);
-        Dxy(&I[df * (f + 1)], &Ixy[f * df], nx, ny);
+        Dxx(&I[df * (f + 1)], &Ixx[f * df], nx, ny, 1);
+        Dyy(&I[df * (f + 1)], &Iyy[f * df], nx, ny, 1);
+        Dxy(&I[df * (f + 1)], &Ixy[f * df], nx, ny, 1);
     }
 
     //outer iterations loop

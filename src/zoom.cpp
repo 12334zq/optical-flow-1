@@ -64,13 +64,60 @@ zoom_out(const ofpix_t *I, // input image
     gaussian(Is, nx, ny, sigma);
 
     // re-sample the image using bicubic interpolation
-    #pragma omp parallel for
+#pragma omp parallel for
     for (int i1 = 0; i1 < nyy; i1++) {
         for (int j1 = 0; j1 < nxx; j1++) {
             const double i2  = i1 / factor;
             const double j2  = j1 / factor;
             float g = bicubic_interpolation_at(Is, j2, i2, nx, ny, false);
             Iout[i1 * nxx + j1] = g;
+        }
+    }
+
+    delete [] Is;
+}
+
+/**
+ *
+ * Downsample an image
+ *
+ **/
+void
+zoom_out_color(const ofpix_t *I, // input image
+               ofpix_t *Iout, // output image
+               const int nx, // image width
+               const int ny, // image height
+               const int nz, // number of color channels in image
+               const double factor // zoom factor between 0 and 1
+               )
+{
+    // temporary working image
+    ofpix_t *Is = new ofpix_t [nx * ny];
+
+    for (int i = 0; i < nx * ny; i++) {
+        Is[i] = I[i];
+    }
+
+    // compute the size of the zoomed image
+    int nxx, nyy;
+    zoom_size(nx, ny, &nxx, &nyy, factor);
+
+    // compute the Gaussian sigma for smoothing
+    const double sigma = ZOOM_SIGMA_ZERO * sqrt(1.0 / (factor * factor) - 1.0);
+
+    // pre-smooth the image
+    gaussian(Is, nx, ny, sigma);
+
+    // re-sample the image using bicubic interpolation
+    for (int index_multichannel = 0; index_multichannel < nz; index_multichannel++) {
+    #pragma omp parallel for
+        for (int i1 = 0; i1 < nyy; i1++) {
+            for (int j1 = 0; j1 < nxx; j1++) {
+                const float i2  = (float) i1 / factor;
+                const float j2  = (float) j1 / factor;
+
+                Iout[(i1 * nxx + j1) * nz + index_multichannel] = bicubic_interpolation_at_color (Is, j2, i2, nx, ny, nz, index_multichannel);
+            }
         }
     }
 

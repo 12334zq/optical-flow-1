@@ -55,7 +55,8 @@ void forward_gradient(const ofpix_t *f, //input image
 void Dxx(const ofpix_t *I, //input image
          ofpix_t *Ixx, //oputput derivative
          const int nx, //image width
-         const int ny //image height
+         const int ny,      //image height
+         const int nz               //number of color channels in the image
          );
 
 
@@ -67,7 +68,8 @@ void Dxx(const ofpix_t *I, //input image
 void Dyy(const ofpix_t *I, //input image
          ofpix_t *Iyy, //oputput derivative
          const int nx, //image width
-         const int ny //image height
+         const int ny,      //image height
+         const int nz               //number of color channels in the image
          );
 
 
@@ -79,7 +81,8 @@ void Dyy(const ofpix_t *I, //input image
 void Dxy(const ofpix_t *I, //input image
          ofpix_t *Ixy, //oputput derivative
          const int nx, //image width
-         const int ny //image height
+         const int ny,      //image height
+         const int nz               //number of color channels in the image
          );
 
 /**
@@ -91,7 +94,8 @@ void centered_gradient(const ofpix_t *input, //input image
                        ofpix_t *dx, //computed x derivative
                        ofpix_t *dy, //computed y derivative
                        const int nx, //image width
-                       const int ny //image height
+                       const int ny,        //image height
+                       const int nz               //number of color channels in the image
                        );
 
 
