@@ -9,7 +9,7 @@
 #ifndef BROX_OPTIC_FLOW_H
 #define BROX_OPTIC_FLOW_H
 
-#include <stdbool.h>
+#include "of.h"
 
 /**
   *
@@ -17,10 +17,10 @@
   *
 **/
 void brox_optic_flow_spatial(
-    const float *I1,         //first image
-    const float *I2,         //second image
-    float *u, 		      //x component of the optical flow
-    float *v, 		      //y component of the optical flow
+    const ofpix_t *I1,         //first image
+    const ofpix_t *I2,         //second image
+    ofpix_t *u, 		      //x component of the optical flow
+    ofpix_t *v, 		      //y component of the optical flow
     const int    nxx,        //image width
     const int    nyy,        //image height
     const float  alpha,      //smoothness parameter
@@ -40,9 +40,9 @@ void brox_optic_flow_spatial(
   *
 **/
 void brox_optic_flow_temporal(
-    const float *I,          //sequence of images
-    float *u,                //x component of the optical flow
-    float *v,                //y component of the optical flow
+    const ofpix_t *I,          //sequence of images
+    ofpix_t *u,                //x component of the optical flow
+    ofpix_t *v,                //y component of the optical flow
     const int    nxx,        //image width
     const int    nyy,        //image height
     const int    frames,     //number of frames

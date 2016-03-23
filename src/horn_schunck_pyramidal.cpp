@@ -14,10 +14,9 @@
 #include <math.h>
 
 #include "zoom.h"
-#include "gaussian.h"
+#include "operators.h"
 #include "bicubic_interpolation.h"
-#include "mask.h"
-#include "xmalloc.h"
+#include "utils.h"
 
 #define SOR_EXTRAPOLATION_PARAMETER 1.9
 #define INPUT_PRESMOOTHING_SIGMA 0.8
@@ -30,15 +29,16 @@
  *  (SOR = Successive Over-Relaxation)
  *
  */
-static float sor_iteration(
-	const float *Au, // constant part of the numerator of u
-	const float *Av, // constant part of the numerator of v
-	const float *Du, // denominator of u
-	const float *Dv, // denominator of v
-	const float *D,  // constant part of the numerator
-	float 	    *u,  // x component of the flow
-	float 	    *v,  // y component of the flow
-	const float  al, // alpha smoothness parameter
+static
+float sor_iteration(
+	const ofpix_t *Au, // constant part of the numerator of u
+	const ofpix_t *Av, // constant part of the numerator of v
+	const ofpix_t *Du, // denominator of u
+	const ofpix_t *Dv, // denominator of v
+	const ofpix_t *D,  // constant part of the numerator
+	ofpix_t 	    *u,  // x component of the flow
+	ofpix_t 	    *v,  // y component of the flow
+	const double  al, // alpha smoothness parameter
 	const int    p,  // current position
 	const int    p1, // up-left neighbor
 	const int    p2, // up-right neighbor
@@ -79,15 +79,15 @@ static float sor_iteration(
  *
  */
 void horn_schunck_optical_flow(
-	const float *I1,             // source image
-	const float *I2,             // target image
-	float       *u,              // x component of optical flow
-	float       *v,              // y component of optical flow
+	const ofpix_t *I1,             // source image
+	const ofpix_t *I2,             // target image
+	ofpix_t       *u,              // x component of optical flow
+	ofpix_t       *v,              // y component of optical flow
 	const int    nx,             // image width
 	const int    ny,             // image height
-	const float  alpha,          // smoothing parameter
+	const double  alpha,          // smoothing parameter
 	const int    warps,          // number of warpings per scale
-	const float  TOL,            // stopping criterion threshold
+	const double  TOL,            // stopping criterion threshold
 	const int    maxiter,        // maximum number of iterations
 	const bool   verbose         // switch on messages
 )
@@ -97,20 +97,19 @@ void horn_schunck_optical_flow(
 			alpha, warps, TOL, maxiter, verbose);
 
 	const int   size   = nx * ny;
-	const float alpha2 = alpha * alpha;
+	const double alpha2 = alpha * alpha;
 
 	//allocate memory
-	int sf = sizeof(float);
-	float *I2x  = (float*)xmalloc(size * sf); // x derivative of I2
-	float *I2y  = (float*)xmalloc(size * sf); // y derivative of I2
-	float *I2w  = (float*)xmalloc(size * sf); // warping of I2
-	float *I2wx = (float*)xmalloc(size * sf); // warping of I2x
-	float *I2wy = (float*)xmalloc(size * sf); // warping of I2y
-	float *Au   = (float*)xmalloc(size * sf); // constant part of numerator of u
-	float *Av   = (float*)xmalloc(size * sf); // constant part of numerator of v
-	float *Du   = (float*)xmalloc(size * sf); // denominator of u
-	float *Dv   = (float*)xmalloc(size * sf); // denominator of v
-	float *D    = (float*)xmalloc(size * sf); // common numerator of u and v
+	ofpix_t *I2x  = new ofpix_t[size]; // x derivative of I2
+	ofpix_t *I2y  = new ofpix_t[size]; // y derivative of I2
+	ofpix_t *I2w  = new ofpix_t[size]; // warping of I2
+	ofpix_t *I2wx = new ofpix_t[size]; // warping of I2x
+	ofpix_t *I2wy = new ofpix_t[size]; // warping of I2y
+	ofpix_t *Au   = new ofpix_t[size]; // constant part of numerator of u
+	ofpix_t *Av   = new ofpix_t[size]; // constant part of numerator of v
+	ofpix_t *Du   = new ofpix_t[size]; // denominator of u
+	ofpix_t *Dv   = new ofpix_t[size]; // denominator of v
+	ofpix_t *D    = new ofpix_t[size]; // common numerator of u and v
 
 	// compute the gradient of the second image
 	centered_gradient(I2, I2x, I2y, nx, ny);
@@ -128,8 +127,8 @@ void horn_schunck_optical_flow(
 		// store the constant parts of the system
 		for(int i = 0; i < size; i++)
 		{
-			const float I2wl = I2wx[i] * u[i] + I2wy[i] * v[i];
-			const float dif  = I1[i] - I2w[i] + I2wl;
+			const double I2wl = I2wx[i] * u[i] + I2wy[i] * v[i];
+			const double dif  = I1[i] - I2w[i] + I2wl;
 
 			Au[i] = dif * I2wx[i];
 			Av[i] = dif * I2wy[i];
@@ -139,7 +138,7 @@ void horn_schunck_optical_flow(
 		}
 
 		int niter = 0;
-		float error = 1000;
+		double error = 1000;
 
 		// iterations of the SOR numerical scheme
 		while(error > TOL && niter < maxiter)
@@ -240,80 +239,17 @@ void horn_schunck_optical_flow(
 	}
 
 	// free the allocated memory
-	free(I2x);
-	free(I2y);
-	free(I2w);
-	free(I2wx);
-	free(I2wy);
-	free(Au);
-	free(Av);
-	free(Du);
-	free(Dv);
-	free(D);
+	delete [] I2x;
+	delete [] I2y;
+	delete [] I2w;
+	delete [] I2wx;
+	delete [] I2wy;
+	delete [] Au;
+	delete [] Av;
+	delete [] Du;
+	delete [] Dv;
+	delete [] D;
 }
-
-// compute the largest number of an array
-static float max_element(const float *x, int n)
-{
-	int r = 0;
-	for (int i = 1; i < n; i++)
-		if (x[i] > x[r])
-			r = i;
-	return x[r];
-}
-
-// compute the smallest number of an array
-static float min_element(const float *x, int n)
-{
-	int r = 0;
-	for (int i = 1; i < n; i++)
-		if (x[i] < x[r])
-			r = i;
-	return x[r];
-}
-
-
-/**
-  *
-  * Function to normalize the images between 0 and 255
-  *
-**/
-static void image_normalization(
-	const float *I1,   // first image
-	const float *I2,   // second image
-	float       *I1n,  // first normalized image
-	float       *I2n,  // second normalized image
-	int          size  // size of each image
-)
-{
-	// find the max and min of both images
-	const float max1 = max_element(I1, size);
-	const float max2 = max_element(I2, size);
-	const float min1 = min_element(I1, size);
-	const float min2 = min_element(I2, size);
-
-	// obtain the absolute max and min
-	const float max = max1 > max2 ? max1 : max2;
-	const float min = min1 < min2 ? min1 : min2;
-	const float den = max - min;
-
-	if(den > 0)
-		// normalize both images
-		for(int i = 0; i < size; i++)
-		{
-			I1n[i] = 255.0 * (I1[i] - min) / den;
-			I2n[i] = 255.0 * (I2[i] - min) / den;
-		}
-
-	else
-		// copy the original images
-		for(int i = 0; i < size; i++)
-		{
-			I1n[i] = I1[i];
-			I2n[i] = I2[i];
-		}
-}
-
 
 /**
  *
@@ -323,17 +259,17 @@ static void image_normalization(
  *
  */
  void horn_schunck_pyramidal(
-	const float *I1,              // source image
-	const float *I2,              // target image
-	float       *u,               // x component of optical flow
-	float       *v,               // y component of optical flow
+	const ofpix_t *I1,              // source image
+	const ofpix_t *I2,              // target image
+	ofpix_t       *u,               // x component of optical flow
+	ofpix_t       *v,               // y component of optical flow
 	const int    nx,              // image width
 	const int    ny,              // image height
-	const float  alpha,           // smoothing weight
+	const double  alpha,           // smoothing weight
 	const int    nscales,         // number of scales
-	const float  zfactor,         // zoom factor
+	const double  zfactor,         // zoom factor
 	const int    warps,           // number of warpings per scale
-	const float  TOL,             // stopping criterion threshold
+	const double  TOL,             // stopping criterion threshold
 	const int    maxiter,         // maximum number of iterations
 	const bool   verbose          // switch on messages
 )
@@ -344,19 +280,19 @@ static void image_normalization(
 
 	int size = nx * ny;
 
-	float *I1s[nscales];
-	float *I2s[nscales];
-	float *us[nscales];
-	float *vs[nscales];
-	int nxx[nscales];
-	int nyy[nscales];
+	ofpix_t **I1s = new ofpix_t* [nscales];
+	ofpix_t **I2s = new ofpix_t* [nscales];
+	ofpix_t **us = new ofpix_t* [nscales];
+	ofpix_t **vs = new ofpix_t* [nscales];
+	int *nxx = new int [nscales];
+	int *nyy = new int [nscales];
 
 
-	I1s[0] = (float*)xmalloc(size * sizeof(float));
-	I2s[0] = (float*)xmalloc(size * sizeof(float));
+	I1s[0] = new ofpix_t[size];
+	I2s[0] = new ofpix_t[size];
 
 	// normalize the finest scale images between 0 and 255
-	image_normalization(I1, I2, I1s[0], I2s[0], size);
+	image_normalization_2(I1, I2, I1s[0], I2s[0], size);
 
 	// presmoothing the finest scale images
 	gaussian(I1s[0], nx, ny, INPUT_PRESMOOTHING_SIGMA);
@@ -373,10 +309,10 @@ static void image_normalization(
 		zoom_size(nxx[s-1], nyy[s-1], nxx+s, nyy+s, zfactor);
 		const int sizes = nxx[s] * nyy[s];
 
-		I1s[s] = (float*)xmalloc(sizes * sizeof(float));
-		I2s[s] = (float*)xmalloc(sizes * sizeof(float));
-		us[s] = (float*)xmalloc(sizes * sizeof(float));
-		vs[s] = (float*)xmalloc(sizes * sizeof(float));
+		I1s[s] = new ofpix_t[sizes];
+		I2s[s] = new ofpix_t[sizes];
+		us[s] = new ofpix_t[sizes];
+		vs[s] = new ofpix_t[sizes];
 
 		// compute the zoom from the previous finer scale
 		zoom_out(I1s[s-1], I1s[s], nxx[s-1], nyy[s-1], zfactor);
@@ -420,13 +356,20 @@ static void image_normalization(
 	}
 
 	// free the allocated memory
-	free(I1s[0]);
-	free(I2s[0]);
+	delete [] I1s[0];
+	delete [] I2s[0];
 	for(int i = 1; i < nscales; i++)
 	{
-		free(I1s[i]);
-		free(I2s[i]);
-		free(us[i]);
-		free(vs[i]);
+		delete [] I1s[i];
+		delete [] I2s[i];
+		delete [] us[i];
+		delete [] vs[i];
 	}
+    delete [] I1s;
+    delete [] I2s;
+    delete [] us;
+    delete [] vs;
+    delete [] nxx;
+    delete [] nyy;
+
 }

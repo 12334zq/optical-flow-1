@@ -38,10 +38,13 @@ using namespace std;
  *
  */
 static
-bool read_image(const char *fname, float **f, int *nx, int *ny)
+bool read_image(const char *fname, ofpix_t **f, int *w, int *h)
 {
-    *f = iio_read_image_float(fname, nx, ny);
-
+#ifdef OFPIX_DOUBLE
+    *f = iio_read_image_double(fname, w, h);
+#else
+    *f = iio_read_image_float(fname, w, h);
+#endif
     return *f ? true : false;
 }
 

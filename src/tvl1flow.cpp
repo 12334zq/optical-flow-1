@@ -13,11 +13,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "mask.h"
+#include "operators.h"
 #include "bicubic_interpolation.h"
 #include "zoom.h"
-#include "gaussian.h"
-#include "xmalloc.h"
+#include "utils.h"
 #include "tvl1flow.h"
 
 #define MAX_ITERATIONS 300
@@ -45,10 +44,10 @@
  *
  **/
 void Dual_TVL1_optic_flow(
-		float *I0,           // source image
-		float *I1,           // target image
-		float *u1,           // x component of the optical flow
-		float *u2,           // y component of the optical flow
+		ofpix_t *I0,           // source image
+		ofpix_t *I1,           // target image
+		ofpix_t *u1,           // x component of the optical flow
+		ofpix_t *u2,           // y component of the optical flow
 		const int   nx,      // image width
 		const int   ny,      // image height
 		const float tau,     // time step
@@ -62,27 +61,26 @@ void Dual_TVL1_optic_flow(
 	const int   size = nx * ny;
 	const float l_t = lambda * theta;
 
-	size_t sf = sizeof(float);
-	float *I1x    = (float*)xmalloc(size*sf);
-	float *I1y    = (float*)xmalloc(size*sf);
-	float *I1w    = (float*)xmalloc(size*sf);
-	float *I1wx   = (float*)xmalloc(size*sf);
-	float *I1wy   = (float*)xmalloc(size*sf);
-	float *rho_c  = (float*)xmalloc(size*sf);
-	float *v1     = (float*)xmalloc(size*sf);
-	float *v2     = (float*)xmalloc(size*sf);
-	float *p11    = (float*)xmalloc(size*sf);
-	float *p12    = (float*)xmalloc(size*sf);
-	float *p21    = (float*)xmalloc(size*sf);
-	float *p22    = (float*)xmalloc(size*sf);
-	float *div    = (float*)xmalloc(size*sf);
-	float *grad   = (float*)xmalloc(size*sf);
-	float *div_p1 = (float*)xmalloc(size*sf);
-	float *div_p2 = (float*)xmalloc(size*sf);
-	float *u1x    = (float*)xmalloc(size*sf);
-	float *u1y    = (float*)xmalloc(size*sf);
-	float *u2x    = (float*)xmalloc(size*sf);
-	float *u2y    = (float*)xmalloc(size*sf);
+	ofpix_t *I1x    = new ofpix_t[size];
+	ofpix_t *I1y    = new ofpix_t[size];
+	ofpix_t *I1w    = new ofpix_t[size];
+	ofpix_t *I1wx   = new ofpix_t[size];
+	ofpix_t *I1wy   = new ofpix_t[size];
+	ofpix_t *rho_c  = new ofpix_t[size];
+	ofpix_t *v1     = new ofpix_t[size];
+	ofpix_t *v2     = new ofpix_t[size];
+	ofpix_t *p11    = new ofpix_t[size];
+	ofpix_t *p12    = new ofpix_t[size];
+	ofpix_t *p21    = new ofpix_t[size];
+	ofpix_t *p22    = new ofpix_t[size];
+	ofpix_t *div    = new ofpix_t[size];
+	ofpix_t *grad   = new ofpix_t[size];
+	ofpix_t *div_p1 = new ofpix_t[size];
+	ofpix_t *div_p2 = new ofpix_t[size];
+	ofpix_t *u1x    = new ofpix_t[size];
+	ofpix_t *u1y    = new ofpix_t[size];
+	ofpix_t *u2x    = new ofpix_t[size];
+	ofpix_t *u2y    = new ofpix_t[size];
 
 	centered_gradient(I1, I1x, I1y, nx, ny);
 
@@ -206,91 +204,27 @@ void Dual_TVL1_optic_flow(
 	}
 
 	// delete allocated memory
-	free(I1x);
-	free(I1y);
-	free(I1w);
-	free(I1wx);
-	free(I1wy);
-	free(rho_c);
-	free(v1);
-	free(v2);
-	free(p11);
-	free(p12);
-	free(p21);
-	free(p22);
-	free(div);
-	free(grad);
-	free(div_p1);
-	free(div_p2);
-	free(u1x);
-	free(u1y);
-	free(u2x);
-	free(u2y);
+	delete [] I1x;
+	delete [] I1y;
+	delete [] I1w;
+	delete [] I1wx;
+	delete [] I1wy;
+	delete [] rho_c;
+	delete [] v1;
+	delete [] v2;
+	delete [] p11;
+	delete [] p12;
+	delete [] p21;
+	delete [] p22;
+	delete [] div;
+	delete [] grad;
+	delete [] div_p1;
+	delete [] div_p2;
+	delete [] u1x;
+	delete [] u1y;
+	delete [] u2x;
+	delete [] u2y;
 }
-
-/**
- *
- * Compute the max and min of an array
- *
- **/
-static void getminmax(
-	float *min,     // output min
-	float *max,     // output max
-	const float *x, // input array
-	int n           // array size
-)
-{
-	*min = *max = x[0];
-	for (int i = 1; i < n; i++) {
-		if (x[i] < *min)
-			*min = x[i];
-		if (x[i] > *max)
-			*max = x[i];
-	}
-}
-
-/**
- *
- * Function to normalize the images between 0 and 255
- *
- **/
-static
-void image_normalization(
-		const float *I0,  // input image0
-		const float *I1,  // input image1
-		float *I0n,       // normalized output image0
-		float *I1n,       // normalized output image1
-		int size          // size of the image
-		)
-{
-	float max0, max1, min0, min1;
-
-	// obtain the max and min of each image
-	getminmax(&min0, &max0, I0, size);
-	getminmax(&min1, &max1, I1, size);
-
-	// obtain the max and min of both images
-	const float max = (max0 > max1)? max0 : max1;
-	const float min = (min0 < min1)? min0 : min1;
-	const float den = max - min;
-
-	if (den > 0)
-		// normalize both images
-		for (int i = 0; i < size; i++)
-		{
-			I0n[i] = 255.0 * (I0[i] - min) / den;
-			I1n[i] = 255.0 * (I1[i] - min) / den;
-		}
-
-	else
-		// copy the original images
-		for (int i = 0; i < size; i++)
-		{
-			I0n[i] = I0[i];
-			I1n[i] = I1[i];
-		}
-}
-
 
 /**
  *
@@ -298,10 +232,10 @@ void image_normalization(
  *
  **/
 void Dual_TVL1_optic_flow_multiscale(
-		float *I0,           // source image
-		float *I1,           // target image
-		float *u1,           // x component of the optical flow
-		float *u2,           // y component of the optical flow
+		ofpix_t *I0,           // source image
+		ofpix_t *I1,           // target image
+		ofpix_t *u1,           // x component of the optical flow
+		ofpix_t *u2,           // y component of the optical flow
 		const int   nxx,     // image width
 		const int   nyy,     // image height
 		const float tau,     // time step
@@ -317,15 +251,15 @@ void Dual_TVL1_optic_flow_multiscale(
 	int size = nxx * nyy;
 
 	// allocate memory for the pyramid structure
-	float **I0s = (float**)xmalloc(nscales * sizeof(float*));
-	float **I1s = (float**)xmalloc(nscales * sizeof(float*));
-	float **u1s = (float**)xmalloc(nscales * sizeof(float*));
-	float **u2s = (float**)xmalloc(nscales * sizeof(float*));
-	int    *nx  = (int*)xmalloc(nscales * sizeof(int));
-	int    *ny  = (int*)xmalloc(nscales * sizeof(int));
+	ofpix_t **I0s = new ofpix_t* [nscales];
+	ofpix_t **I1s = new ofpix_t* [nscales];
+	ofpix_t **u1s = new ofpix_t* [nscales];
+	ofpix_t **u2s = new ofpix_t* [nscales];
+	int    *nx  = new int [nscales];
+	int    *ny  = new int [nscales];
 
-	I0s[0] = (float*)xmalloc(size*sizeof(float));
-	I1s[0] = (float*)xmalloc(size*sizeof(float));
+	I0s[0] = new ofpix_t[size];
+	I1s[0] = new ofpix_t[size];
 
 	u1s[0] = u1;
 	u2s[0] = u2;
@@ -333,7 +267,7 @@ void Dual_TVL1_optic_flow_multiscale(
 	ny [0] = nyy;
 
 	// normalize the images between 0 and 255
-	image_normalization(I0, I1, I0s[0], I1s[0], size);
+	image_normalization_2(I0, I1, I0s[0], I1s[0], size);
 
 	// pre-smooth the original images
 	gaussian(I0s[0], nx[0], ny[0], PRESMOOTHING_SIGMA);
@@ -346,10 +280,10 @@ void Dual_TVL1_optic_flow_multiscale(
 		const int sizes = nx[s] * ny[s];
 
 		// allocate memory
-		I0s[s] = (float*)xmalloc(sizes*sizeof(float));
-		I1s[s] = (float*)xmalloc(sizes*sizeof(float));
-		u1s[s] = (float*)xmalloc(sizes*sizeof(float));
-		u2s[s] = (float*)xmalloc(sizes*sizeof(float));
+		I0s[s] = new ofpix_t[sizes];
+		I1s[s] = new ofpix_t[sizes];
+		u1s[s] = new ofpix_t[sizes];
+		u2s[s] = new ofpix_t[sizes];
 
 		// zoom in the images to create the pyramidal structure
 		zoom_out(I0s[s-1], I0s[s], nx[s-1], ny[s-1], zfactor);
@@ -392,18 +326,18 @@ void Dual_TVL1_optic_flow_multiscale(
 	// delete allocated memory
 	for (int i = 1; i < nscales; i++)
 	{
-		free(I0s[i]);
-		free(I1s[i]);
-		free(u1s[i]);
-		free(u2s[i]);
+		delete [] I0s[i];
+		delete [] I1s[i];
+		delete [] u1s[i];
+		delete [] u2s[i];
 	}
-	free(I0s[0]);
-	free(I1s[0]);
+	delete [] I0s[0];
+	delete [] I1s[0];
 
-	free(I0s);
-	free(I1s);
-	free(u1s);
-	free(u2s);
-	free(nx);
-	free(ny);
+	delete [] I0s;
+	delete [] I1s;
+	delete [] u1s;
+	delete [] u2s;
+	delete [] nx;
+	delete [] ny;
 }

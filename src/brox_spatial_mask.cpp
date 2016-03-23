@@ -18,11 +18,11 @@
  *
  */
 void brox_spatial_psi_divergence(
-    const float *psi, //robust functional
-    float *psi1,      //coefficients of divergence
-    float *psi2,      //coefficients of divergence
-    float *psi3,      //coefficients of divergence
-    float *psi4,      //coefficients of divergence
+    const ofpix_t *psi, //robust functional
+    ofpix_t *psi1,      //coefficients of divergence
+    ofpix_t *psi2,      //coefficients of divergence
+    ofpix_t *psi3,      //coefficients of divergence
+    ofpix_t *psi4,      //coefficients of divergence
     const int nx,     //image width
     const int ny      //image height
 )
@@ -108,14 +108,14 @@ void brox_spatial_psi_divergence(
  *
  */
 void brox_spatial_divergence_u(
-    const float *u,    //x component of optical flow
-    const float *v,    //y component of optical flow
-    const float *psi1, //coefficients of divergence
-    const float *psi2, //coefficients of divergence
-    const float *psi3, //coefficients of divergence
-    const float *psi4, //coefficients of divergence
-    float *div_u,      //computed divergence for u
-    float *div_v,      //computed divergence for v
+    const ofpix_t *u,    //x component of optical flow
+    const ofpix_t *v,    //y component of optical flow
+    const ofpix_t *psi1, //coefficients of divergence
+    const ofpix_t *psi2, //coefficients of divergence
+    const ofpix_t *psi3, //coefficients of divergence
+    const ofpix_t *psi4, //coefficients of divergence
+    ofpix_t *div_u,      //computed divergence for u
+    ofpix_t *div_v,      //computed divergence for v
     const int nx,      //image width 
     const int ny       //image height
 )

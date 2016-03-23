@@ -148,7 +148,7 @@ double bicubic_interpolation_cell(double p[4][4], //array containing the interpo
  * Detect if the point goes outside the image domain.
  *
  **/
-double bicubic_interpolation_at(const float *input, //image to be interpolated
+double bicubic_interpolation_at(const ofpix_t *input, //image to be interpolated
 		const double uu,    //x component of the vector field
 		const double vv,    //y component of the vector field
 		const int nx,    //image width
@@ -250,7 +250,7 @@ double bicubic_interpolation_at(const float *input, //image to be interpolated
   *
 **/
 double
-bicubic_interpolation_at_color (const float *input,	//image to be interpolated
+bicubic_interpolation_at_color (const ofpix_t *input,	//image to be interpolated
 		       const double uu,		//x component of the vector field
 		       const double vv,		//y component of the vector field
 		       const int nx,		//width of the image
@@ -358,10 +358,10 @@ bicubic_interpolation_at_color (const float *input,	//image to be interpolated
  * Compute the bicubic interpolation of an image.
  *
  **/
-void bicubic_interpolation_warp(const float *input,     // image to be warped
-		const float *u,         // x component of the vector field
-		const float *v,         // y component of the vector field
-		float *output,    // image warped with bicubic interpolation
+void bicubic_interpolation_warp(const ofpix_t *input,     // image to be warped
+		const ofpix_t *u,         // x component of the vector field
+		const ofpix_t *v,         // y component of the vector field
+		ofpix_t *output,    // image warped with bicubic interpolation
 		const int nx,        // image width
 		const int ny,        // image height
 		bool border_out // if true, put zeros outside the region
@@ -385,10 +385,10 @@ void bicubic_interpolation_warp(const float *input,     // image to be warped
   *
 **/
 void
-bicubic_interpolation_warp_color (const float *input,	//image to be warped
-		       const float *u,		//x component of the vector field
-		       const float *v,		//y component of the vector field
-		       float *output,		//warped output image with bicubic interpolation
+bicubic_interpolation_warp_color (const ofpix_t *input,	//image to be warped
+		       const ofpix_t *u,		//x component of the vector field
+		       const ofpix_t *v,		//y component of the vector field
+		       ofpix_t *output,		//warped output image with bicubic interpolation
 		       const int nx,		//width of the image
 		       const int ny,		//height of the image
 		       const int nz,		//number of channels of the image	
@@ -411,9 +411,9 @@ bicubic_interpolation_warp_color (const float *input,	//image to be warped
   } // end multi-channel loop
 }
 
-double me_interpolate_bilinear(const float *in, int ncol, double x, double y) {
+double me_interpolate_bilinear(const ofpix_t *in, int ncol, double x, double y) {
 	int l, k, offset;
-	double *x0, *x1, *x2, *x3;
+	const ofpix_t *x0, *x1, *x2, *x3;
 	double a, b, b_1, a_1, phi;
 
 	l = floor(x);
@@ -427,7 +427,7 @@ double me_interpolate_bilinear(const float *in, int ncol, double x, double y) {
 	a_1 = 1.0 - a;
 	b_1 = 1.0 - b;
 
-	x0 = x1 = (double *) in + offset;
+	x0 = x1 = in + offset;
 	x1++;
 	x2 = x3 = x0 + ncol;
 	x3++;
@@ -445,10 +445,10 @@ double me_interpolate_bilinear(const float *in, int ncol, double x, double y) {
 	return (phi);
 }
 
-double me_interpolate_bicubic(const float *in, int nx, int ny, double x,
+double me_interpolate_bicubic(const ofpix_t *in, int nx, int ny, double x,
 		double y) {
 	int N, M, ncol, nrow, j, k, offset;
-	double *p_double, *p_double1;
+	const ofpix_t *p_double, *p_double1;
 	double phi, sh, sv;
 	double mem_c[16], *mem_pc[4], **c;
 	double mem_u[8], *uh, *uv;
@@ -543,7 +543,7 @@ double me_interpolate_bicubic(const float *in, int nx, int ny, double x,
 	/* We are sure that these values cannot fall outside the image */
 
 	offset = k * ncol + j;
-	p_double = (double *) in + offset;
+	p_double = in + offset;
 	p_double1 = p_double + ncol;
 
 	c[0][0] = *p_double;
@@ -612,8 +612,6 @@ double me_interpolate_bicubic(const float *in, int nx, int ny, double x,
 
 	/* Ok, now compute convolution */
 
-	phi = 0;
-
 	for (j = -1; j <= 2; j++) {
 		phi = 0;
 
@@ -639,7 +637,7 @@ double me_interpolate_bicubic(const float *in, int nx, int ny, double x,
 	return (phi);
 }
 
-void me_image_restriction(const float *in, float *out, int ncol, int nrow,
+void me_image_restriction(const ofpix_t *in, ofpix_t *out, int ncol, int nrow,
 		int new_ncol, int new_nrow) {
 	int i, j;
 	double coord_x, coord_y;

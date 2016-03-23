@@ -8,17 +8,17 @@
 
 #include "brox_optic_flow.h"
 
-#include <omp.h>
+//#include <omp.h>
 #include <vector>
 #include <iostream>
 #include <cmath>
 #include <algorithm>
 
-#include "mask.h"
+#include "operators.h"
 #include "zoom.h"
 #include "bicubic_interpolation.h"
-#include "gaussian.h"
 #include "brox_spatial_mask.h"
+#include "utils.h"
 
 #define EPSILON 0.001
 #define MAXITER 300
@@ -32,13 +32,13 @@
 **/
 static
 void psi_data(
-    const float *I1,  //first image
-    const float *I2,  //second image
-    const float *I2x, //gradient of the second image
-    const float *I2y, //gradient of the second image
-    const float *du,  //motion increment
-    const float *dv,  //motion increment
-    float *psip,      //output coefficients
+    const ofpix_t *I1,  //first image
+    const ofpix_t *I2,  //second image
+    const ofpix_t *I2x, //gradient of the second image
+    const ofpix_t *I2y, //gradient of the second image
+    const ofpix_t *du,  //motion increment
+    const ofpix_t *dv,  //motion increment
+    ofpix_t *psip,      //output coefficients
     const int nx,     //image width
     const int ny      //image height
 )
@@ -65,16 +65,16 @@ void psi_data(
 **/
 static
 void psi_gradient(
-    const float *I1x,  //gradient of the first image
-    const float *I1y,  //gradient of the first image
-    const float *I2x,  //gradient of the second image
-    const float *I2y,  //gradient of the second image
-    const float *I2xx, //second derivatives of the second image
-    const float *I2xy, //second derivatives of the second image
-    const float *I2yy, //second derivatives of the second image
-    const float *du,   //motion increment
-    const float *dv,   //motion increment
-    float *psip,       //output coefficients
+    const ofpix_t *I1x,  //gradient of the first image
+    const ofpix_t *I1y,  //gradient of the first image
+    const ofpix_t *I2x,  //gradient of the second image
+    const ofpix_t *I2y,  //gradient of the second image
+    const ofpix_t *I2xx, //second derivatives of the second image
+    const ofpix_t *I2xy, //second derivatives of the second image
+    const ofpix_t *I2yy, //second derivatives of the second image
+    const ofpix_t *du,   //motion increment
+    const ofpix_t *dv,   //motion increment
+    ofpix_t *psip,       //output coefficients
     const int nx,      //image width
     const int ny       //image height
 )
@@ -102,11 +102,11 @@ void psi_gradient(
 **/
 static
 void psi_smooth(
-    const float *ux, //gradient of x component of the optical flow
-    const float *uy, //gradient of x component of the optical flow
-    const float *vx, //gradient of y component of the optical flow
-    const float *vy, //gradient of y component of the optical flow
-    float *psi,      //output coefficients
+    const ofpix_t *ux, //gradient of x component of the optical flow
+    const ofpix_t *uy, //gradient of x component of the optical flow
+    const ofpix_t *vx, //gradient of y component of the optical flow
+    const ofpix_t *vy, //gradient of y component of the optical flow
+    ofpix_t *psi,      //output coefficients
     const int nx,    //image width
     const int ny     //image height
 )
@@ -134,18 +134,18 @@ void psi_smooth(
  */
 static
 inline float sor_iteration(
-    const float *Au,   //constant part of the numerator of u
-    const float *Av,   //constant part of the numerator of v
-    const float *Du,   //denominator of u
-    const float *Dv,   //denominator of v
-    const float *D,    //constant part of the numerator
+    const ofpix_t *Au,   //constant part of the numerator of u
+    const ofpix_t *Av,   //constant part of the numerator of v
+    const ofpix_t *Du,   //denominator of u
+    const ofpix_t *Dv,   //denominator of v
+    const ofpix_t *D,    //constant part of the numerator
     float       *du,   //x component of the motion increment
     float       *dv,   //y component of the motion increment
     const float alpha, //alpha smoothness parameter
-    const float *psi1, //coefficients of the divergence
-    const float *psi2, 
-    const float *psi3,
-    const float *psi4,
+    const ofpix_t *psi1, //coefficients of the divergence
+    const ofpix_t *psi2, 
+    const ofpix_t *psi3,
+    const ofpix_t *psi4,
     const int   i,     //current row
     const int   i0,    //previous row
     const int   i1,    //following row
@@ -187,10 +187,10 @@ inline float sor_iteration(
 static
 void brox_optic_flow
 (
-    const float *I1,         //first image
-    const float *I2,         //second image
-    float *u, 		      //x component of the optical flow
-    float *v, 		      //y component of the optical flow
+    const ofpix_t *I1,         //first image
+    const ofpix_t *I2,         //second image
+    ofpix_t *u, 		      //x component of the optical flow
+    ofpix_t *v, 		      //y component of the optical flow
     const int    nx,         //image width
     const int    ny,         //image height
     const float  alpha,      //smoothness parameter
@@ -205,45 +205,45 @@ void brox_optic_flow
     const int size = nx * ny;
 
     //allocate memory
-    float *du    = new float[size];
-    float *dv    = new float[size];
+    ofpix_t *du    = new ofpix_t[size];
+    ofpix_t *dv    = new ofpix_t[size];
 
-    float *ux    = new float[size];
-    float *uy    = new float[size];
-    float *vx    = new float[size];
-    float *vy    = new float[size];
+    ofpix_t *ux    = new ofpix_t[size];
+    ofpix_t *uy    = new ofpix_t[size];
+    ofpix_t *vx    = new ofpix_t[size];
+    ofpix_t *vy    = new ofpix_t[size];
 
-    float *I1x   = new float[size];
-    float *I1y   = new float[size];
-    float *I2x   = new float[size];
-    float *I2y   = new float[size];
-    float *I2w   = new float[size];
-    float *I2wx  = new float[size];
-    float *I2wy  = new float[size];
-    float *I2xx  = new float[size];
-    float *I2yy  = new float[size];
-    float *I2xy  = new float[size];
-    float *I2wxx = new float[size];
-    float *I2wyy = new float[size];
-    float *I2wxy = new float[size];
+    ofpix_t *I1x   = new ofpix_t[size];
+    ofpix_t *I1y   = new ofpix_t[size];
+    ofpix_t *I2x   = new ofpix_t[size];
+    ofpix_t *I2y   = new ofpix_t[size];
+    ofpix_t *I2w   = new ofpix_t[size];
+    ofpix_t *I2wx  = new ofpix_t[size];
+    ofpix_t *I2wy  = new ofpix_t[size];
+    ofpix_t *I2xx  = new ofpix_t[size];
+    ofpix_t *I2yy  = new ofpix_t[size];
+    ofpix_t *I2xy  = new ofpix_t[size];
+    ofpix_t *I2wxx = new ofpix_t[size];
+    ofpix_t *I2wyy = new ofpix_t[size];
+    ofpix_t *I2wxy = new ofpix_t[size];
 
-    float *div_u = new float[size];
-    float *div_v = new float[size];
-    float *div_d = new float[size];
+    ofpix_t *div_u = new ofpix_t[size];
+    ofpix_t *div_v = new ofpix_t[size];
+    ofpix_t *div_d = new ofpix_t[size];
 
-    float *Au    = new float[size];
-    float *Av    = new float[size];
-    float *Du    = new float[size];
-    float *Dv    = new float[size];
-    float *D     = new float[size];
+    ofpix_t *Au    = new ofpix_t[size];
+    ofpix_t *Av    = new ofpix_t[size];
+    ofpix_t *Du    = new ofpix_t[size];
+    ofpix_t *Dv    = new ofpix_t[size];
+    ofpix_t *D     = new ofpix_t[size];
 
-    float *psid  = new float[size];
-    float *psig  = new float[size];
-    float *psis  = new float[size];
-    float *psi1  = new float[size];
-    float *psi2  = new float[size];
-    float *psi3  = new float[size];
-    float *psi4  = new float[size];
+    ofpix_t *psid  = new ofpix_t[size];
+    ofpix_t *psig  = new ofpix_t[size];
+    ofpix_t *psis  = new ofpix_t[size];
+    ofpix_t *psi1  = new ofpix_t[size];
+    ofpix_t *psi2  = new ofpix_t[size];
+    ofpix_t *psi3  = new ofpix_t[size];
+    ofpix_t *psi4  = new ofpix_t[size];
 
     //compute the gradient of the images
     centered_gradient(I1, I1x, I1y, nx, ny);
@@ -464,49 +464,6 @@ void brox_optic_flow
 }
 
 
-/**
-  *
-  * Function to normalize the images between 0 and 255
-  *
-**/
-static
-void image_normalization(
-    const float *I1,   //input image 1
-    const float *I2,   //input image 2
-    float       *I1n,  //normalized output image 1
-    float       *I2n,  //normalized output image 2 
-    int          size  //size of the image
-)
-{
-    //compute the max and min values of the images
-    const float max0 = *std::max_element(I1, &I1[size]);
-    const float max1 = *std::max_element(I2, &I2[size]);
-    const float min0 = *std::min_element(I1, &I1[size]);
-    const float min1 = *std::min_element(I2, &I2[size]);
-
-    //compute the global max and min
-    const float max = std::max(max0, max1);
-    const float min = std::min(min0, min1);
-    const float den = max - min;
-
-    if(den > 0)
-	//normalize the images between 0 and 255
-#pragma omp parallel for
-	for(int i = 0; i < size; i++)
-	{
-	    I1n[i] = 255.0 * (I1[i] - min) / den;
-	    I2n[i] = 255.0 * (I2[i] - min) / den;
-	}
-
-    else
-	//copy the original data
-#pragma omp parallel for
-	for(int i = 0; i < size; i++)
-	{
-	    I1n[i] = I1[i];
-	    I2n[i] = I2[i];
-	}
-}
 
 
 /**
@@ -515,10 +472,10 @@ void image_normalization(
   *
 **/
 void brox_optic_flow_spatial(
-    const float *I1,         //first image
-    const float *I2,         //second image
-    float *u, 		      //x component of the optical flow
-    float *v, 		      //y component of the optical flow
+    const ofpix_t *I1,         //first image
+    const ofpix_t *I2,         //second image
+    ofpix_t *u, 		      //x component of the optical flow
+    ofpix_t *v, 		      //y component of the optical flow
     const int    nxx,        //image width
     const int    nyy,        //image height
     const float  alpha,      //smoothness parameter
@@ -533,19 +490,19 @@ void brox_optic_flow_spatial(
 {
     int size = nxx * nyy;
 
-    std::vector<float *> I1s(nscales);
-    std::vector<float *> I2s(nscales);
-    std::vector<float *> us (nscales);
-    std::vector<float *> vs (nscales);
+    std::vector<ofpix_t *> I1s(nscales);
+    std::vector<ofpix_t *> I2s(nscales);
+    std::vector<ofpix_t *> us (nscales);
+    std::vector<ofpix_t *> vs (nscales);
 
     std::vector<int> nx(nscales);
     std::vector<int> ny(nscales);
 
-    I1s[0] = new float[size];
-    I2s[0] = new float[size];
+    I1s[0] = new ofpix_t[size];
+    I2s[0] = new ofpix_t[size];
 
     //normalize the input images between 0 and 255
-    image_normalization(I1, I2, I1s[0], I2s[0], size);
+    image_normalization_2(I1, I2, I1s[0], I2s[0], size);
 
     //presmoothing the finest scale images
     gaussian(I1s[0], nxx, nyy, GAUSSIAN_SIGMA);
@@ -562,10 +519,10 @@ void brox_optic_flow_spatial(
 	zoom_size(nx[s-1], ny[s-1], &nx[s], &ny[s], nu);
 	const int sizes = nx[s] * ny[s];
 
-	I1s[s] = new float[sizes];
-	I2s[s] = new float[sizes];
-	us[s]  = new float[sizes];
-	vs[s]  = new float[sizes];
+	I1s[s] = new ofpix_t[sizes];
+	I2s[s] = new ofpix_t[sizes];
+	us[s]  = new ofpix_t[sizes];
+	vs[s]  = new ofpix_t[sizes];
 
 	//compute the zoom from the previous scale
 	zoom_out(I1s[s-1], I1s[s], nx[s-1], ny[s-1], nu);
@@ -606,14 +563,14 @@ void brox_optic_flow_spatial(
     }
 
     //delete allocated memory
-    delete []I1s[0];
-    delete []I2s[0];
+    delete [] I1s[0];
+    delete [] I2s[0];
 
     for(int i = 1; i < nscales; i++)
     {
-	delete []I1s[i];
-	delete []I2s[i];
-	delete []us [i];
-	delete []vs [i];
+	delete [] I1s[i];
+	delete [] I2s[i];
+	delete [] us [i];
+	delete [] vs [i];
     }
 }

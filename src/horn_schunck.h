@@ -1,9 +1,11 @@
 #ifndef HORN_SCHUNK_H
 #define HORN_SCHUNK_H
 
+#include "of.h"
+
 // run n iterations of the classical Horn-Schunck method
-void hs(float *u, float *v, float *a, float *b, int w, int h,
-        int n, float alpha);
+void hs(ofpix_t *u, ofpix_t *v, ofpix_t *a, ofpix_t *b, int w, int h,
+        int n, double alpha);
 
 /**
  *
@@ -11,15 +13,15 @@ void hs(float *u, float *v, float *a, float *b, int w, int h,
  *
  */
 void horn_schunck_optical_flow(
-	const float *I1,             // source image
-	const float *I2,             // target image
-	float       *u,              // x component of optical flow
-	float       *v,              // y component of optical flow
+	const ofpix_t *I1,             // source image
+	const ofpix_t *I2,             // target image
+	ofpix_t       *u,              // x component of optical flow
+	ofpix_t       *v,              // y component of optical flow
 	const int    nx,             // image width
 	const int    ny,             // image height
-	const float  alpha,          // smoothing parameter
+	const double  alpha,          // smoothing parameter
 	const int    warps,          // number of warpings per scale
-	const float  TOL,            // stopping criterion threshold
+	const double  TOL,            // stopping criterion threshold
 	const int    maxiter,        // maximum number of iterations
 	const bool   verbose         // switch on messages
                                );
@@ -32,17 +34,17 @@ void horn_schunck_optical_flow(
  *
  */
  void horn_schunck_pyramidal(
-	const float *I1,              // source image
-	const float *I2,              // target image
-	float       *u,               // x component of optical flow
-	float       *v,               // y component of optical flow
+	const ofpix_t *I1,              // source image
+	const ofpix_t *I2,              // target image
+	ofpix_t       *u,               // x component of optical flow
+	ofpix_t       *v,               // y component of optical flow
 	const int    nx,              // image width
 	const int    ny,              // image height
-	const float  alpha,           // smoothing weight
+	const double  alpha,           // smoothing weight
 	const int    nscales,         // number of scales
-	const float  zfactor,         // zoom factor
+	const double  zfactor,         // zoom factor
 	const int    warps,           // number of warpings per scale
-	const float  TOL,             // stopping criterion threshold
+	const double  TOL,             // stopping criterion threshold
 	const int    maxiter,         // maximum number of iterations
 	const bool   verbose          // switch on messages
                              );

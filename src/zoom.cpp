@@ -8,11 +8,9 @@
 
 #include "zoom.h"
 
-#include "xmalloc.h"
-#include "mask.h"
+#include "operators.h"
 #include "bicubic_interpolation.h"
 #include "math.h"
-#include "gaussian.h"
 
 #define ZOOM_SIGMA_ZERO 0.6
 
@@ -41,15 +39,15 @@ void zoom_size(
   *
 **/
 void zoom_out(
-	const float *I,    // input image
-	float *Iout,       // output image
+	const ofpix_t *I,    // input image
+	ofpix_t *Iout,       // output image
 	const int nx,      // image width
 	const int ny,      // image height
 	const float factor // zoom factor between 0 and 1
 )
 {
 	// temporary working image
-	float *Is = (float *)xmalloc(nx * ny * sizeof*Is);
+	ofpix_t *Is = new float [nx * ny];
 	for(int i = 0; i < nx * ny; i++)
 		Is[i] = I[i];
 
@@ -58,7 +56,7 @@ void zoom_out(
 	zoom_size(nx, ny, &nxx, &nyy, factor);
 
 	// compute the Gaussian sigma for smoothing
-	const float sigma = ZOOM_SIGMA_ZERO * sqrt(1.0/(factor*factor) - 1.0);
+	const double sigma = ZOOM_SIGMA_ZERO * sqrt(1.0/(factor*factor) - 1.0);
 
 	// pre-smooth the image
 	gaussian(Is, nx, ny, sigma);
@@ -75,7 +73,7 @@ void zoom_out(
 		Iout[i1 * nxx + j1] = g;
 	}
 
-	free(Is);
+	delete [] Is;
 }
 
 
@@ -85,8 +83,8 @@ void zoom_out(
   *
 **/
 void zoom_in(
-	const float *I, // input image
-	float *Iout,    // output image
+	const ofpix_t *I, // input image
+	ofpix_t *Iout,    // output image
 	int nx,         // width of the original image
 	int ny,         // height of the original image
 	int nxx,        // width of the zoomed image
@@ -94,18 +92,18 @@ void zoom_in(
 )
 {
 	// compute the zoom factor
-	const float factorx = ((float)nxx / nx);
-	const float factory = ((float)nyy / ny);
+	const double factorx = ((float)nxx / nx);
+	const double factory = ((float)nyy / ny);
 
 	// re-sample the image using bicubic interpolation
 #pragma omp parallel for
 	for (int i1 = 0; i1 < nyy; i1++)
 	for (int j1 = 0; j1 < nxx; j1++)
 	{
-		float i2 =  (float) i1 / factory;
-		float j2 =  (float) j1 / factorx;
+		double i2 =  (float) i1 / factory;
+		double j2 =  (float) j1 / factorx;
 
-		float g = bicubic_interpolation_at(I, j2, i2, nx, ny, false);
+		double g = bicubic_interpolation_at(I, j2, i2, nx, ny, false);
 		Iout[i1 * nxx + j1] = g;
 	}
 }

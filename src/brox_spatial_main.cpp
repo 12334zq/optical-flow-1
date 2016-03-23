@@ -10,7 +10,9 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#ifndef DISABLE_OMP
 #include <omp.h>
+#endif
 
 #include "brox_optic_flow.h"
 #include "iio.h"
@@ -48,7 +50,11 @@ using namespace std;
 static
 bool read_image(const char *fname, float **f, int *w, int *h)
 {
+#ifdef OFPIX_DOUBLE
+    *f = iio_read_image_double(fname, w, h);
+#else
     *f = iio_read_image_float(fname, w, h);
+#endif
     return *f ? true : false;
 }
 
@@ -90,8 +96,10 @@ int main(int argc, char *argv[])
 	const char *image2  = argv[i]; i++;
 	const char *outfile = (argc >= 4)?  argv[i]:"flow.flo"; i++;
 
+#ifndef DISABLE_OMP
 	int nproc     = (argc > i)? atoi(argv[i]):PAR_DEFAULT_NPROC; i++;
-	float alpha   = (argc > i)? atof(argv[i]):PAR_DEFAULT_ALPHA; i++;
+#endif
+    float alpha   = (argc > i)? atof(argv[i]):PAR_DEFAULT_ALPHA; i++;
 	float gamma   = (argc > i)? atof(argv[i]):PAR_DEFAULT_GAMMA; i++;
 	int   nscales = (argc > i)? atoi(argv[i]):PAR_DEFAULT_NSCALES; i++;
 	float zfactor = (argc > i)? atof(argv[i]):PAR_DEFAULT_ZFACTOR; i++;
@@ -101,8 +109,9 @@ int main(int argc, char *argv[])
 	int   verbose = (argc > i)? atoi(argv[i]):PAR_DEFAULT_VERBOSE; i++;
 
 	//check parameters
-        if (nproc > 0)
-          omp_set_num_threads (nproc);
+#ifndef DISABLE_OMP
+        if(nproc   >  0) omp_set_num_threads(nproc);
+#endif//DISABLE_OMP
 	if(alpha   <= 0) alpha   = PAR_DEFAULT_ALPHA;
 	if(gamma   <  0) gamma   = PAR_DEFAULT_GAMMA;
 	if(nscales <= 0) nscales = PAR_DEFAULT_NSCALES;
