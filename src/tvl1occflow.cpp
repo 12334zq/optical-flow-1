@@ -263,8 +263,8 @@ Dual_TVL1_optic_flow(ofpix_t *I_1,              // Previous frame to source Imag
         double error = INFINITY;
         //n = epsilon - epsilon;
         //n = 0;
-        //while (error > epsilon  && n < EXT_MAX_ITERATIONS) //comentado para pruebas, porque para probar hay que tener un numero fijo de iteraciones
-        while (n < EXT_MAX_ITERATIONS) {
+        while (error > epsilon  && n < EXT_MAX_ITERATIONS) { //comentado para pruebas, porque para probar hay que tener un numero fijo de iteraciones
+        //while (n < EXT_MAX_ITERATIONS) {
             n++;
 
             //Relaxation steps

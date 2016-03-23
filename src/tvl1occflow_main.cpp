@@ -54,31 +54,6 @@ read_image(const char *filename,
     return f;
 }
 
-// QUITAR WRITE FLOW EN LA VERSION A ENTREGAR
-int
-write_flow(double *u,
-           double *v,
-           int w,
-           int h)
-{
-    FILE *fp;
-    int i, j, offset;
-
-    fp = fopen("flow_BCC.data", "w");
-
-    offset = 0;
-
-    for (i = 0; i < h; i++) {
-        for (j = 0; j < w; j++, offset++) {
-            fprintf(fp, "%d %d %.20f %.20f\n", j, h - 1 - i, u[offset], -v[offset]);
-        }
-        fprintf(fp, "\n");
-    }
-
-    fclose(fp);
-
-    return 1;
-}
 
 /**
  *
@@ -246,8 +221,6 @@ main(int argc,
         Dual_TVL1_optic_flow_multiscale(
             I_1, I0, I1, filtI0, u1, u2, chi, nx, ny, lambda, alpha, betaW,  theta,
             nscales, zfactor, nwarps, epsilon, verbose);
-
-        //write_flow(u1, u2, nx, ny); //<----Eliminar en la version fina a entregar. Solo esta para propositos de depuracio.
 
         //save the optical flow
 

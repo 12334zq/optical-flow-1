@@ -365,8 +365,6 @@
 		1E85869F1CA2A54500FF8BA1 /* of */ = {
 			isa = PBXGroup;
 			children = (
-				1ED70D8A1CA2B33E00707652 /* utils.cpp */,
-				1ED70D871CA2B25800707652 /* utils.h */,
 				1ED70D4E1CA2A62B00707652 /* bicubic_interpolation.cpp */,
 				1ED70D4F1CA2A62B00707652 /* bicubic_interpolation.h */,
 				1ED70D501CA2A62B00707652 /* brox_optic_flow_spatial.cpp */,
@@ -391,6 +389,8 @@
 				1ED70D631CA2A62B00707652 /* tvl1occflow_tv_rof_box.h */,
 				1ED70D641CA2A62B00707652 /* tvl1occflow.cpp */,
 				1ED70D651CA2A62B00707652 /* tvl1occflow.h */,
+				1ED70D8A1CA2B33E00707652 /* utils.cpp */,
+				1ED70D871CA2B25800707652 /* utils.h */,
 				1ED70D681CA2A62B00707652 /* zoom.cpp */,
 				1ED70D691CA2A62B00707652 /* zoom.h */,
 			);

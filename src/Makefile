@@ -20,7 +20,7 @@ LD	=	$(CXX)
 #CFLAGS_OPT=-Wall -O3 -DNDEBUG -march=core2 -ftree-vectorize -msse3 -mssse3 -ffast-math
 #CFLAGS_OPT=-Wall -g -O2 -march=pentium4 -ftree-vectorize -msse3 -mssse3 -ffast-math -DDISPARITYTAGGER_DISABLE_TEXTURE_RECTANGLE -DDISPARITYTAGGER_DISABLE_PBO
 #CFLAGS_OPT=-Wall -g -O2 -march=pentium4 -ftree-vectorize -msse3 -mssse3 -ffast-math -DVIDEOINPUT_WITHOUT_NVSDI
-CFLAGS_OPT= -Wall  -Wmissing-declarations
+CFLAGS_OPT= -Wall  -Wmissing-declarations -Wextra -pedantic
 #CFLAGS_OPT= -Wall -g -O2
 CFLAGS_OPENMP = -fopenmp
 
