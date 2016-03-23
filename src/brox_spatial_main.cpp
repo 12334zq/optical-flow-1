@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
-#ifndef DISABLE_OMP
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -99,7 +99,7 @@ main(int argc,
         const char *image2  = argv[i]; i++;
         const char *outfile = (argc >= 4) ?  argv[i] : "flow.flo"; i++;
 
-#ifndef DISABLE_OMP
+#ifdef _OPENMP
         int nproc     = (argc > i) ? atoi(argv[i]) : PAR_DEFAULT_NPROC; i++;
 #endif
         double alpha   = (argc > i) ? atof(argv[i]) : PAR_DEFAULT_ALPHA; i++;
@@ -112,11 +112,11 @@ main(int argc,
         int verbose = (argc > i) ? atoi(argv[i]) : PAR_DEFAULT_VERBOSE; i++;
 
         //check parameters
-#ifndef DISABLE_OMP
+#ifdef _OPENMP
         if (nproc   >  0) {
             omp_set_num_threads(nproc);
         }
-#endif//DISABLE_OMP
+#endif
         if (alpha   <= 0) {
             alpha   = PAR_DEFAULT_ALPHA;
         }
@@ -174,23 +174,19 @@ main(int argc,
                 );
 
             //save the flow
-            ofpix_t *f = new ofpix_t[nx * ny * 2];
+            float *f = new float[nx * ny * 2];
             for (int i = 0; i < nx * ny; i++) {
                 f[2 * i] = u[i];
                 f[2 * i + 1] = v[i];
             }
-#ifdef OFPIX_DOUBLE
-            iio_save_image_double_vec( (char *)outfile, f, nx, ny, 2 );
-#else
             iio_save_image_float_vec( (char *)outfile, f, nx, ny, 2 );
-#endif
+            delete []f;
 
             //free dynamic memory
             free(I1);
             free(I2);
             delete []u;
             delete []v;
-            delete []f;
         } else {
             cerr << "Cannot read the images or the size of the images are not equal" << endl;
         }

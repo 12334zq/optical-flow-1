@@ -63,7 +63,7 @@ LDFLAGS=$(CFLAGS_OPT) $(CFLAGS_EXTRA) $(LDFLAGS_EXTRA) $(OPENCL_LDFLAGS)
 COMPILE.c=$(CC) -c $(CFLAGS) $(CPPFLAGS)
 COMPILE.cpp=$(CXX) -c $(CXXFLAGS) $(CPPFLAGS)
 
-PROGRAMS = horn_schunck_classic horn_schunck_pyramidal brox_spatial brox_temporal tvl1flow tvl1occflow
+PROGRAMS = horn_schunck_classic horn_schunck_pyramidal brox_spatial brox_temporal tvl1flow tvl1occflow robust_expo_methods
 
 LIBRARY = libof.a
 
@@ -86,6 +86,9 @@ of_SOURCES_CPP = \
 	tvl1occflow.cpp \
 	tvl1occflow_solvers.cpp \
 	tvl1occflow_tv_rof_box.cpp \
+	robust_expo_generic_tensor.cpp \
+	robust_expo_methods.cpp \
+	robust_expo_smoothness.cpp \
 	bicubic_interpolation.cpp \
 	operators.cpp \
 	utils.cpp \
@@ -105,6 +108,8 @@ of_HEADERS = \
 	tvl1occflow_solvers.h \
 	tvl1occflow_tv_rof_box.h \
 	tvl1occflow_constants.h \
+	robust_expo_methods.h \
+	robust_expo_smoothness.h \
 	bicubic_interpolation.h \
 	operators.h \
 	zoom.h \
@@ -166,6 +171,15 @@ tvl1occflow_HEADERS = \
 tvl1occflow_OBJS =  $(tvl1occflow_SOURCES_CPP:.cpp=.o) $(tvl1occflow_SOURCES_C:.c=.o)
 tvl1occflow_LIBS = $(LIBRARY) $(LIBS)
 
+robust_expo_methods_SOURCES_CPP = \
+	robust_expo_methods_main.cpp \
+	iio.cpp
+robust_expo_methods_SOURCES_C =
+robust_expo_methods_HEADERS = \
+	iio.h
+robust_expo_methods_OBJS =  $(robust_expo_methods_SOURCES_CPP:.cpp=.o) $(robust_expo_methods_SOURCES_C:.c=.o)
+robust_expo_methods_LIBS = $(LIBRARY) $(LIBS)
+
 SRCS_CPP = \
 	$(of_SOURCES_CPP) \
 	$(horn_schunck_classic_SOURCES_CPP) \
@@ -173,7 +187,8 @@ SRCS_CPP = \
 	$(brox_spatial_SOURCES_CPP) \
 	$(brox_temporal_SOURCES_CPP) \
 	$(tvl1flow_SOURCES_CPP)  \
-	$(tvl1occflow_SOURCES_CPP) 
+	$(tvl1occflow_SOURCES_CPP) \
+	$(robust_expo_methods_SOURCES_CPP) 
 
 SRCS_C = \
 	$(of_SOURCES_C) \
@@ -182,7 +197,8 @@ SRCS_C = \
 	$(brox_spatial_SOURCES_C) \
 	$(brox_temporal_SOURCES_C) \
 	$(tvl1flow_SOURCES_C) \
-	$(tvl1occflow_SOURCES_C)
+	$(tvl1occflow_SOURCES_C) \
+	$(robust_expo_methods_SOURCES_C)
 
 HEADERS = \
 	$(of_HEADERS) \
@@ -191,7 +207,8 @@ HEADERS = \
 	$(brox_spatial_HEADERS) \
 	$(brox_temporal_HEADERS) \
 	$(tvl1flow_HEADERS) \
-	$(tvl1occflow_HEADERS)
+	$(tvl1occflow_HEADERS) \
+	$(robust_expo_methods_HEADERS)
 
 horn_schunck_classic: $(horn_schunck_classic_OBJS) $(LIBRARY)
 	$(LD) -o $@ $^ $(LDFLAGS) $(horn_schunck_classic_LIBS) $(LDADD)
@@ -210,6 +227,9 @@ tvl1flow: $(tvl1flow_OBJS) $(LIBRARY)
 
 tvl1occflow: $(tvl1occflow_OBJS) $(LIBRARY)
 	$(LD) -o $@ $^ $(LDFLAGS) $(tvl1occflow_LIBS) $(LDADD)
+
+robust_expo_methods: $(robust_expo_methods_OBJS) $(LIBRARY)
+	$(LD) -o $@ $^ $(LDFLAGS) $(robust_expo_methods_LIBS) $(LDADD)
 
 
 $(LIBRARY): $(of_OBJS)

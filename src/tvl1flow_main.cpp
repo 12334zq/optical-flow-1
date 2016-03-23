@@ -12,9 +12,9 @@
 #include <ctime>
 #include <cmath>
 
-#ifndef DISABLE_OMP
+#ifdef _OPENMP
 #include <omp.h>
-#endif//DISABLE_OMP
+#endif
 
 #include "iio.h"
 #include "tvl1flow.h"
@@ -166,11 +166,11 @@ main(int argc,
         }
     }
 
-#ifndef DISABLE_OMP
+#ifdef _OPENMP
     if (nproc > 0) {
         omp_set_num_threads(nproc);
     }
-#endif//DISABLE_OMP
+#endif
 
     // read the input images
     int nx, ny, nx2, ny2;
@@ -206,11 +206,13 @@ main(int argc,
             );
 
         //save the optical flow
-#ifdef OFPIX_DOUBLE
-        iio_save_image_double_split(outfile, u, nx, ny, 2);
-#else
-        iio_save_image_float_split(outfile, u, nx, ny, 2);
-#endif
+        float *f = new float[nx * ny * 2];
+        for (int i = 0; i < nx * ny; i++) {
+            f[2 * i] = u[i];
+            f[2 * i + 1] = v[i];
+        }
+        iio_save_image_float_vec( (char *)outfile, f, nx, ny, 2 );
+        delete []f;
 
         //delete allocated memory
         free(I0);

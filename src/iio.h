@@ -244,8 +244,6 @@ void *iio_read_image_raw(const char *fname,
 
 void iio_save_image_float_vec(const char *filename, float *x, int w, int h, int pd);
 void iio_save_image_float_split(const char *filename, float *x, int w, int h, int pd);
-void iio_save_image_double_vec(const char *filename, double *x, int w, int h, int pd);
-void iio_save_image_double_split(const char *filename, double *x, int w, int h, int pd);
 void iio_save_image_float(const char *filename, float *x, int w, int h);
 void iio_save_image_double(const char *filename, double *x, int w, int h);
 void iio_save_image_uint8_vec(const char *filename, uint8_t *x, int w, int h, int pd);

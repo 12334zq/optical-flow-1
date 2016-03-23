@@ -455,12 +455,12 @@
 		1ED70D451CA2A5BE00707652 /* progs */ = {
 			isa = PBXGroup;
 			children = (
-				1E1DF6AB1CA2FDE200AAABB5 /* robust_expo_methods_main.cpp */,
 				1ED70D8D1CA2BB7800707652 /* brox_spatial_main.cpp */,
 				1ED70D8E1CA2BB7800707652 /* brox_temporal_main.cpp */,
 				1ED70D8F1CA2BB7800707652 /* horn_schunck_classic_main.cpp */,
 				1ED70D901CA2BB7800707652 /* horn_schunck_pyramidal_main.cpp */,
 				1ED70D911CA2BB7800707652 /* iio.cpp */,
+				1E1DF6AB1CA2FDE200AAABB5 /* robust_expo_methods_main.cpp */,
 				1ED70D921CA2BB7800707652 /* tvl1flow_main.cpp */,
 				1ED70D931CA2BB7800707652 /* tvl1occflow_main.cpp */,
 				1ED70D941CA2BB7800707652 /* xmalloc.cpp */,
@@ -1025,7 +1025,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
-					"DISABLE_OMP=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;

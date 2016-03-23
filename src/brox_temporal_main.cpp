@@ -207,16 +207,12 @@ main(int argc,
             for (int i = 0; i < frames - 1; i++) {
                 char file[30];
                 sprintf(file, "%s/flow%.2d.flo", dir, i);
-                ofpix_t *f = new ofpix_t[nx * ny * 2];
+                float *f = new float[nx * ny * 2];
                 for (int j = 0; j < nx * ny; j++) {
                     f[2 * j]   = u[i * nx * ny + j];
                     f[2 * j + 1] = v[i * nx * ny + j];
                 }
-#ifdef OFPIX_DOUBLE
-                iio_save_image_double_vec(file, f, nx, ny, 2);
-#else
                 iio_save_image_float_vec(file, f, nx, ny, 2);
-#endif
                 delete []f;
             }
 

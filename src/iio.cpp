@@ -3904,39 +3904,6 @@ iio_save_image_float_split(const char *filename,
 }
 
 void
-iio_save_image_double_vec(const char *filename,
-                          double *data,
-                          int w,
-                          int h,
-                          int pd)
-{
-    struct iio_image x[1];
-
-    x->dimension = 2;
-    x->sizes[0] = w;
-    x->sizes[1] = h;
-    x->pixel_dimension = pd;
-    x->type = IIO_TYPE_DOUBLE;
-    x->data = data;
-    x->contiguous_data = false;
-    iio_save_image_default(filename, x);
-}
-
-void
-iio_save_image_double_split(const char *filename,
-                            double *data,
-                            int w,
-                            int h,
-                            int pd)
-{
-    double *rdata = (double *)xmalloc(w * h * pd * sizeof *rdata);
-
-    recover_broken_pixels_double(rdata, data, w * h, pd);
-    iio_save_image_double_vec(filename, rdata, w, h, pd);
-    xfree(rdata);
-}
-
-void
 iio_save_image_float(const char *filename,
                      float *data,
                      int w,

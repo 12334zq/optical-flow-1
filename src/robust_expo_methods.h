@@ -26,12 +26,12 @@ void robust_expo_methods(const ofpix_t *I1,          // first image
                          const int nyy, // image height
                          const int nzz, // number of color channels in image
                          const int method_type, // choose the diffusion strategy
-                         const float alpha, // smoothness parameter
-                         const float gamma, // gradient term parameter
-                         const float lambda, // coefficient parameter for the decreasing function (if needed)
+                         const double alpha, // smoothness parameter
+                         const double gamma, // gradient term parameter
+                         const double lambda, // coefficient parameter for the decreasing function (if needed)
                          const int nscales, // number of scales
-                         const float nu, // downsampling factor
-                         const float TOL, // stopping criterion threshold
+                         const double nu, // downsampling factor
+                         const double TOL, // stopping criterion threshold
                          const int inner_iter, // number of inner iterations
                          const int outer_iter, // number of outer iterations
                          const bool verbose // switch on messages

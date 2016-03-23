@@ -12,9 +12,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-#ifndef DISABLE_OMP
+#ifdef _OPENMP
 #include <omp.h>
-#endif//DISABLE_OMP
+#endif
 
 
 #include "iio.h"
@@ -103,11 +103,11 @@ main(int argc,
     int verbose = (argc >= 12) ? atoi(argv[i]) : PAR_DEFAULT_VERBOSE; i++;
 
     // check parameters
-#ifndef DISABLE_OMP
+#ifdef _OPENMP
     if (nproc   >  0) {
         omp_set_num_threads(nproc);
     }
-#endif//DISABLE_OMP
+#endif
     if (alpha   <= 0) {
         alpha   = PAR_DEFAULT_ALPHA;
     }
@@ -163,11 +163,13 @@ main(int argc,
             );
 
         // save the flow
-#ifdef OFPIX_DOUBLE
-        iio_save_image_double_split(outfile, u, nx, ny, 2);
-#else
-        iio_save_image_float_split(outfile, u, nx, ny, 2);
-#endif
+        float *f = new float[nx * ny * 2];
+        for (int i = 0; i < nx * ny; i++) {
+            f[2 * i] = u[i];
+            f[2 * i + 1] = v[i];
+        }
+        iio_save_image_float_vec( (char *)outfile, f, nx, ny, 2 );
+        delete []f;
 
         // free allocated memory
         free(I1);

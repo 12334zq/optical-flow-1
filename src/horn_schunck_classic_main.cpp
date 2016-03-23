@@ -27,9 +27,9 @@ main(int argc,
     //                                        0 1     2     3 4 5
     int niter = atoi(argv[1]);
     double alpha = atof(argv[2]);
-    char *filename_a = argv[3];
-    char *filename_b = argv[4];
-    char *filename_f = argv[5];
+    const char *filename_a = argv[3];
+    const char *filename_b = argv[4];
+    const char *filename_f = argv[5];
     int w, h, ww, hh;
 #ifdef OFPIX_DOUBLE
     ofpix_t *a = iio_read_image_double(filename_a, &w, &h);
@@ -44,11 +44,15 @@ main(int argc,
     ofpix_t *u = new ofpix_t [2 * w * h];
     ofpix_t *v = u + w * h;
     hs(u, v, a, b, w, h, niter, alpha);
-#ifdef OFPIX_DOUBLE
-    iio_save_image_double_split(filename_f, u, w, h, 2);
-#else
-    iio_save_image_float_split(filename_f, u, w, h, 2);
-#endif
+    //save the flow
+    float *f = new float[w * h * 2];
+    for (int i = 0; i < w * h; i++) {
+        f[2 * i] = u[i];
+        f[2 * i + 1] = v[i];
+    }
+    iio_save_image_float_vec( filename_f, f, w, h, 2 );
+    delete []f;
+
     delete [] u;
 
     return EXIT_SUCCESS;

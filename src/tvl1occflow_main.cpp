@@ -17,7 +17,7 @@
 
 #ifdef _OPENMP
 #include <omp.h>
-#endif//DISABLE_OMP
+#endif
 
 
 #include "iio.h"
@@ -35,6 +35,7 @@
  *  It always returns an allocated the image.
  *
  */
+static
 ofpix_t *
 read_image(const char *filename,
            int *w,
@@ -174,7 +175,7 @@ main(int argc,
     if (nproc > 0) {
         omp_set_num_threads(nproc);
     }
-#endif//DISABLE_OMP
+#endif
 
     // read the input images
     I_1    = read_image(image_1_name, &nx_1, &ny_1);
@@ -224,10 +225,10 @@ main(int argc,
 
         //save the optical flow
 
-        float *f = (float *)malloc(sizeof(float) * nx * ny * 2);
+        float *f = new float[nx * ny * 2];
         for (int i = 0; i < nx * ny; i++) {
-            f[2 * i] = (float)u1[i];   //Avoid the cast!
-            f[2 * i + 1] = (float)u2[i]; //Avoid the cast!
+            f[2 * i] = u1[i];
+            f[2 * i + 1] = u2[i];
         }
         iio_save_image_float_vec( (char *)outfile, f, nx, ny, 2 );
 

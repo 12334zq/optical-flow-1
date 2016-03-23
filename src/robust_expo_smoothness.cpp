@@ -32,7 +32,7 @@ robust_expo_psi_smooth(const ofpix_t *ux, //gradient of x component of the optic
                        const ofpix_t *vy, //gradient of y component of the optical flow
                        const ofpix_t *expo, //exponential smoothing factor
                        const int size_flow,
-                       float       *psi//output coefficients
+                       ofpix_t       *psi//output coefficients
                        )
 {
     //compute 1/(sqrt(ux²+uy²+vx²+vy²+e²) in each pixel
@@ -46,6 +46,7 @@ robust_expo_psi_smooth(const ofpix_t *ux, //gradient of x component of the optic
     }
 }
 
+static
 void
 max_gradients(const ofpix_t *Ix, // Computed Image 1 derivative in x
               const ofpix_t *Iy, // Computed Image 1 derivative in y
@@ -75,13 +76,14 @@ max_gradients(const ofpix_t *Ix, // Computed Image 1 derivative in x
  * Calculate the lambda optimum using the maximum gradient from all the multi-channel image
  * It also return the maximum gradient per pixel
  **/
+static
 float
 lambda_optimum_using_maximum_gradient_per_pixel(const ofpix_t *Ix, // Computed Image 1 derivative in x
                                                 const ofpix_t *Iy, // Computed Image 1 derivative in y
                                                 const int size, // Total image size (height * weight * nchannels)
                                                 const int size_flow, // Total flow size (height * weight)
                                                 const int nz, // nº channels
-                                                const float alpha, // smoothness weight
+                                                const double alpha, // smoothness weight
                                                 ofpix_t *lambda_per_pixel, // local lambda per pixel
                                                 ofpix_t *maximum_gradients_per_pixel // vector with the maximum gradients per pixel
                                                 )
