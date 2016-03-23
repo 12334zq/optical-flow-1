@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "iio.h"
-#include "xmalloc.h"
 #include "horn_schunck.h"
 
 
@@ -30,13 +29,19 @@ int main(int argc, char *argv[])
 	char *filename_b = argv[4];
 	char *filename_f = argv[5];
 	int w, h, ww, hh;
-	float *a = iio_read_image_float(filename_a, &w, &h);
-	float *b = iio_read_image_float(filename_b, &ww, &hh);
+#ifdef OFPIX_DOUBLE
+	ofpix_t *a = iio_read_image_double(filename_a, &w, &h);
+	ofpix_t *b = iio_read_image_double(filename_b, &ww, &hh);
+#else
+	ofpix_t *a = iio_read_image_float(filename_a, &w, &h);
+	ofpix_t *b = iio_read_image_float(filename_b, &ww, &hh);
+#endif
 	if (w != ww || h != hh)
 		return fprintf(stderr, "input images size mismatch\n");
-	float *u = (float*)xmalloc(2 * w * h * sizeof(float));
-	float *v = u + w*h;
+	ofpix_t *u = new ofpix_t [2 * w * h];
+	ofpix_t *v = u + w*h;
 	hs(u, v, a, b, w, h, niter, alpha);
 	iio_save_image_float_split(filename_f, u, w, h, 2);
+        delete [] u;
 	return EXIT_SUCCESS;
 }

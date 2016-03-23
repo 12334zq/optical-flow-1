@@ -63,7 +63,7 @@ LDFLAGS=$(CFLAGS_OPT) $(CFLAGS_EXTRA) $(LDFLAGS_EXTRA) $(OPENCL_LDFLAGS)
 COMPILE.c=$(CC) -c $(CFLAGS) $(CPPFLAGS)
 COMPILE.cpp=$(CXX) -c $(CXXFLAGS) $(CPPFLAGS)
 
-PROGRAMS = horn_schunck_classic horn_schunck_pyramidal brox_spatial brox_temporal tvl1flow
+PROGRAMS = horn_schunck_classic horn_schunck_pyramidal brox_spatial brox_temporal tvl1flow tvl1occflow
 
 LIBRARY = libof.a
 
@@ -83,22 +83,33 @@ of_SOURCES_CPP = \
 	brox_spatial_mask.cpp \
 	brox_temporal_mask.cpp \
 	tvl1flow.cpp \
+	tvl1occflow.cpp \
+	tvl1occflow_solvers.cpp \
+	tvl1occflow_tv_rof_box.cpp \
 	bicubic_interpolation.cpp \
-	gaussian.cpp \
-	mask.cpp \
-	zoom.cpp \
-	xmalloc.cpp
+	operators.cpp \
+	utils.cpp \
+	zoom.cpp
+
+#	tvl1occflow.cpp \
+#	tvl1occflow_solvers.cpp \
+#	tvl1occflow_tv_rof_box.cpp \
+
 of_SOURCES_C =
 of_HEADERS = \
 	horn_schunck.h \
 	brox_optic_flow.h \
 	brox_spatial_mask.h \
 	tvl1flow.h \
+	tvl1occflow.h \
+	tvl1occflow_solvers.h \
+	tvl1occflow_tv_rof_box.h \
+	tvl1occflow_constants.h \
 	bicubic_interpolation.h \
-	gaussian.h \
-	mask.h \
+	operators.h \
 	zoom.h \
 	xmalloc.h
+
 of_OBJS =  $(of_SOURCES_CPP:.cpp=.o) $(of_SOURCES_C:.c=.o)
 
 horn_schunck_classic_SOURCES_CPP = \
@@ -146,13 +157,23 @@ tvl1flow_HEADERS = \
 tvl1flow_OBJS =  $(tvl1flow_SOURCES_CPP:.cpp=.o) $(tvl1flow_SOURCES_C:.c=.o)
 tvl1flow_LIBS = $(LIBRARY) $(LIBS)
 
+tvl1occflow_SOURCES_CPP = \
+	tvl1occflow_main.cpp \
+	iio.cpp
+tvl1occflow_SOURCES_C =
+tvl1occflow_HEADERS = \
+	iio.h
+tvl1occflow_OBJS =  $(tvl1occflow_SOURCES_CPP:.cpp=.o) $(tvl1occflow_SOURCES_C:.c=.o)
+tvl1occflow_LIBS = $(LIBRARY) $(LIBS)
+
 SRCS_CPP = \
 	$(of_SOURCES_CPP) \
 	$(horn_schunck_classic_SOURCES_CPP) \
 	$(horn_schunck_pyramidal_SOURCES_CPP) \
 	$(brox_spatial_SOURCES_CPP) \
 	$(brox_temporal_SOURCES_CPP) \
-	$(tvl1flow_SOURCES_CPP)
+	$(tvl1flow_SOURCES_CPP)  \
+	$(tvl1occflow_SOURCES_CPP) 
 
 SRCS_C = \
 	$(of_SOURCES_C) \
@@ -160,7 +181,8 @@ SRCS_C = \
 	$(horn_schunck_pyramidal_SOURCES_C) \
 	$(brox_spatial_SOURCES_C) \
 	$(brox_temporal_SOURCES_C) \
-	$(tvl1flow_SOURCES_C)
+	$(tvl1flow_SOURCES_C) \
+	$(tvl1occflow_SOURCES_C)
 
 HEADERS = \
 	$(of_HEADERS) \
@@ -168,7 +190,8 @@ HEADERS = \
 	$(horn_schunck_pyramidal_HEADERS) \
 	$(brox_spatial_HEADERS) \
 	$(brox_temporal_HEADERS) \
-	$(tvl1flow_HEADERS)
+	$(tvl1flow_HEADERS) \
+	$(tvl1occflow_HEADERS)
 
 horn_schunck_classic: $(horn_schunck_classic_OBJS) $(LIBRARY)
 	$(LD) -o $@ $^ $(LDFLAGS) $(horn_schunck_classic_LIBS) $(LDADD)
@@ -184,6 +207,9 @@ brox_temporal: $(brox_temporal_OBJS) $(LIBRARY)
 
 tvl1flow: $(tvl1flow_OBJS) $(LIBRARY)
 	$(LD) -o $@ $^ $(LDFLAGS) $(tvl1flow_LIBS) $(LDADD)
+
+tvl1occflow: $(tvl1occflow_OBJS) $(LIBRARY)
+	$(LD) -o $@ $^ $(LDFLAGS) $(tvl1occflow_LIBS) $(LDADD)
 
 
 $(LIBRARY): $(of_OBJS)

@@ -7,19 +7,18 @@
 // Copyright (C) 2011, Javier Sánchez Pérez <jsanchez@dis.ulpgc.es>
 // All rights reserved.
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
 
 #ifndef DISABLE_OMP
 #include <omp.h>
 #endif//DISABLE_OMP
 
 #include "iio.h"
-#include "xmalloc.h"
 #include "tvl1flow.h"
+#include "of.h"
 
 
 #define PAR_DEFAULT_OUTFLOW "flow.flo"
@@ -33,6 +32,7 @@
 #define PAR_DEFAULT_EPSILON 0.01
 #define PAR_DEFAULT_VERBOSE 0
 
+using namespace std;
 
 /**
  *
@@ -40,9 +40,14 @@
  *  It always returns an allocated the image.
  *
  */
-static float *read_image(const char *filename, int *w, int *h)
+static
+ofpix_t *read_image(const char *filename, int *w, int *h)
 {
-	float *f = iio_read_image_float(filename, w, h);
+#ifdef OFPIX_DOUBLE
+	ofpix_t *f = iio_read_image_double(filename, w, h);
+#else
+	ofpix_t *f = iio_read_image_float(filename, w, h);
+#endif
 	if (!f)
 		fprintf(stderr, "ERROR: could not read image from file "
 				"\"%s\"\n", filename);
@@ -166,8 +171,8 @@ int main(int argc, char *argv[])
 				zfactor, nwarps, epsilon);
 
 		//allocate memory for the flow
-		float *u = (float*)xmalloc(2 * nx * ny * sizeof*u);
-		float *v = u + nx*ny;;
+		ofpix_t *u = new ofpix_t [2 * nx * ny];
+		ofpix_t *v = u + nx*ny;;
 
 		//compute the optical flow
 		Dual_TVL1_optic_flow_multiscale(
@@ -181,7 +186,7 @@ int main(int argc, char *argv[])
 		//delete allocated memory
 		free(I0);
 		free(I1);
-		free(u);
+		delete [] u;
 	} else {
 		fprintf(stderr, "ERROR: input images size mismatch "
 				"%dx%d != %dx%d\n", nx, ny, nx2, ny2);

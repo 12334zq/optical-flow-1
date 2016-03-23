@@ -2,6 +2,10 @@ This directory contains the original sources for the various algorithms.
 
 Test images were removed from the distributions.
 
+### [Horn-Schunck Optical Flow with a Multi-Scale Strategy](http://dx.doi.org/10.5201/ipol.2013.20)
+
+In directory `phs_3`
+
 ### [Robust Optical Flow Estimation](http://dx.doi.org/10.5201/ipol.2013.21) 
 
 In directory `sms_optic_flow_2.0`
@@ -26,8 +30,5 @@ doi: 10.1109/TIP.2016.2526903
 
 Submitted to IPOL, provided by Javier Sánchez Pérez, in directory `ipoldfmethods_20160307`
 
-### [Horn-Schunck Optical Flow with a Multi-Scale Strategy](http://dx.doi.org/10.5201/ipol.2013.20)
-
-In directory `phs_3`
 
 

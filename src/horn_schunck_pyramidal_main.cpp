@@ -18,7 +18,6 @@
 
 
 #include "iio.h"
-#include "xmalloc.h"
 #include "horn_schunck.h"
 
 
@@ -42,14 +41,19 @@
  *  correctly reads the image.
  *
  */
-static int read_image(
+static
+int read_image(
 	const char *fname, // file name of the image
-	float **f,         // allocated memory for the image
+	ofpix_t **f,         // allocated memory for the image
 	int *w,            // image width
 	int *h             // image height
 )
 {
-	*f = iio_read_image_float(fname, w, h);
+#ifdef OFPIX_DOUBLE
+    *f = iio_read_image_double(fname, w, h);
+#else
+    *f = iio_read_image_float(fname, w, h);
+#endif
 	return *f ? true : false;
 }
 
@@ -110,7 +114,7 @@ int main(int argc, char *argv[])
 	if(warps   <= 0) warps   = PAR_DEFAULT_NWARPS;
 	if(TOL     <= 0) TOL     = PAR_DEFAULT_TOL;
 
-	float *I1, *I2;
+	ofpix_t *I1, *I2;
 	int    nx, ny, nx1, ny1;
 
 	// read the input images
@@ -134,8 +138,8 @@ int main(int argc, char *argv[])
 					TOL);
 
 		// allocate memory for the optical flow
-		float *u = (float*)xmalloc(2 * nx * ny * sizeof(*u));
-		float *v = u + nx*ny;
+		ofpix_t *u = new ofpix_t [2 * nx * ny];
+		ofpix_t *v = u + nx*ny;
 
 		// compute the optical flow
 		horn_schunck_pyramidal(
@@ -150,7 +154,7 @@ int main(int argc, char *argv[])
 		// free allocated memory
 		free(I1);
 		free(I2);
-		free(u);
+		delete [] u;
 	} else {
 		fprintf(stderr, "Cannot read the input images "
 				"or their sizes are different.\n");

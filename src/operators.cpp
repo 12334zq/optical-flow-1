@@ -6,8 +6,16 @@
 // Copyright (C) 2012, Javier Sánchez Pérez <jsanchez@dis.ulpgc.es>
 // All rights reserved.
 
-#include "mask.h"
+#include "operators.h"
 
+#include <cmath>
+#include <stdexcept>
+
+#include "of.h"
+
+//#include "stdio.h"
+
+using namespace std;
 
 /**
  *
@@ -25,9 +33,9 @@
  *
  **/
 void divergence(
-		const float *v1, // x component of the vector field
-		const float *v2, // y component of the vector field
-		float *div,      // output divergence
+		const ofpix_t *v1, // x component of the vector field
+		const ofpix_t *v2, // y component of the vector field
+		ofpix_t *div,      // output divergence
 		const int nx,    // image width
 		const int ny     // image height
 	       )
@@ -83,9 +91,9 @@ void divergence(
  *
  **/
 void forward_gradient(
-		const float *f, //input image
-		float *fx,      //computed x derivative
-		float *fy,      //computed y derivative
+		const ofpix_t *f, //input image
+		ofpix_t *fx,      //computed x derivative
+		ofpix_t *fy,      //computed y derivative
 		const int nx,   //image width
 		const int ny    //image height
 		)
@@ -134,11 +142,11 @@ void forward_gradient(
  */
 static
 void mask3x3(
-    const float *input, //input image
-    float *output,      //output image
+    const ofpix_t *input, //input image
+    ofpix_t *output,      //output image
     const int nx,       //image width
     const int ny,       //image height
-    const float *mask   //mask to be applied
+    const ofpix_t *mask   //mask to be applied
 )
 {
     //apply the mask to the center body of the image
@@ -248,8 +256,8 @@ void mask3x3(
  *
  */
 void Dxx(
-    const float *I, //input image
-    float *Ixx,     //oputput derivative
+    const ofpix_t *I, //input image
+    ofpix_t *Ixx,     //oputput derivative
     const int nx,   //image width
     const int ny    //image height
 )
@@ -270,8 +278,8 @@ void Dxx(
  *
  */
 void Dyy(
-    const float *I, //input image
-    float *Iyy,     //oputput derivative
+    const ofpix_t *I, //input image
+    ofpix_t *Iyy,     //oputput derivative
     const int nx,   //image width
     const int ny    //image height
 )
@@ -292,8 +300,8 @@ void Dyy(
  *
  */
 void Dxy(
-    const float *I, //input image
-    float *Ixy,     //oputput derivative
+    const ofpix_t *I, //input image
+    ofpix_t *Ixy,     //oputput derivative
     const int nx,   //image width
     const int ny    //image height
 )
@@ -313,9 +321,9 @@ void Dxy(
  *
  */
 void centered_gradient(
-    const float *input, //input image
-    float *dx,          //computed x derivative
-    float *dy,          //computed y derivative
+    const ofpix_t *input, //input image
+    ofpix_t *dx,          //computed x derivative
+    ofpix_t *dy,          //computed y derivative
     const int nx,       //image width
     const int ny        //image height
 )
@@ -381,14 +389,14 @@ void centered_gradient(
  *
  */
 void centered_gradient3(
-    const float *input, //input image
-    float *dx,          //x derivative
-    float *dy,          //y derivative
-    float *dz,          //z derivative
+    const ofpix_t *input, //input image
+    ofpix_t *dx,          //x derivative
+    ofpix_t *dy,          //y derivative
+    ofpix_t *dz,          //z derivative
     const int nx,       //image width
     const int ny,       //image height
     const int nz        //image depth
-)
+               )
 {
     const int df = nx * ny;
 
@@ -476,3 +484,126 @@ void centered_gradient3(
 	  dz[i] = 0;
 
 }
+
+/**
+ *
+ * In-place Gaussian smoothing of an image
+ *
+ */
+void gaussian(
+    ofpix_t *I,             //input/output image
+    const int xdim,       //image width
+    const int ydim,       //image height
+    const double sigma,   //Gaussian sigma
+    const int boundary_condition,       //boundary condition
+    const int window_size //defines the size of the window
+)
+{
+	const double den  = 2*sigma*sigma;
+	const int   size = (int) (window_size * sigma) + 1 ;
+	const int   bdx  = xdim + size;
+	const int   bdy  = ydim + size;
+
+	if (boundary_condition && size > xdim) {
+        throw std::runtime_error("GaussianSmooth: sigma too large");
+	}
+
+	// compute the coefficients of the 1D convolution kernel
+	double *B = new double[size];
+	for(int i = 0; i < size; i++)
+		B[i] = 1 / (sigma * sqrt(2.0 * 3.1415926)) * exp(-i * i / den);
+
+	// normalize the 1D convolution kernel
+	double norm = 0;
+	for(int i = 0; i < size; i++)
+		norm += B[i];
+	norm *= 2;
+	norm -= B[0];
+	for(int i = 0; i < size; i++)
+		B[i] /= norm;
+
+	// convolution of each line of the input image
+	ofpix_t *R = new ofpix_t[size + xdim + size];
+
+	for (int k = 0; k < ydim; k++)
+	{
+		int i, j;
+		for (i = size; i < bdx; i++)
+			R[i] = I[k * xdim + i - size];
+
+		switch (boundary_condition)
+		{
+		case BOUNDARY_CONDITION_DIRICHLET:
+			for(i = 0, j = bdx; i < size; i++, j++)
+				R[i] = R[j] = 0;
+			break;
+
+		case BOUNDARY_CONDITION_REFLECTING:
+			for(i = 0, j = bdx; i < size; i++, j++) {
+				R[i] = I[k * xdim + size-i];
+				R[j] = I[k * xdim + xdim-i-1];
+			}
+			break;
+
+		case BOUNDARY_CONDITION_PERIODIC:
+			for(i = 0, j = bdx; i < size; i++, j++) {
+				R[i] = I[k * xdim + xdim-size+i];
+				R[j] = I[k * xdim + i];
+			}
+			break;
+		}
+
+		for (i = size; i < bdx; i++)
+		{
+			double sum = B[0] * R[i];
+			for (j = 1; j < size; j++ )
+				sum += B[j] * ( R[i-j] + R[i+j] );
+			I[k * xdim + i - size] = sum;
+		}
+	}
+
+	// convolution of each column of the input image
+	ofpix_t *T = new ofpix_t[size + ydim + size];
+
+	for (int k = 0; k < xdim; k++)
+	{
+		int i, j;
+		for (i = size; i < bdy; i++)
+			T[i] = I[(i - size) * xdim + k];
+
+		switch (boundary_condition)
+		{
+		case BOUNDARY_CONDITION_DIRICHLET:
+			for (i = 0, j = bdy; i < size; i++, j++)
+				T[i] = T[j] = 0;
+			break;
+
+		case BOUNDARY_CONDITION_REFLECTING:
+			for (i = 0, j = bdy; i < size; i++, j++) {
+				T[i] = I[(size-i) * xdim + k];
+				T[j] = I[(ydim-i-1) * xdim + k];
+			}
+			break;
+
+		case BOUNDARY_CONDITION_PERIODIC:
+			for( i = 0, j = bdx; i < size; i++, j++) {
+				T[i] = I[(ydim-size+i) * xdim + k];
+				T[j] = I[i * xdim + k];
+			}
+			break;
+		}
+
+		for (i = size; i < bdy; i++)
+		{
+			double sum = B[0] * T[i];
+			for (j = 1; j < size; j++ )
+				sum += B[j] * (T[i-j] + T[i+j]);
+			I[(i - size) * xdim + k] = sum;
+		}
+	}
+
+    delete [] B;
+	delete [] R;
+	delete [] T;
+}
+

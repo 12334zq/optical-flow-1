@@ -6,8 +6,10 @@
 // Copyright (C) 2012, Javier Sánchez Pérez <jsanchez@dis.ulpgc.es>
 // All rights reserved.
 
-#ifndef MASK_H
-#define MASK_H
+#ifndef OF_OPERATORS_H
+#define OF_OPERATORS_H
+
+#include "of.h"
 
 /**
  *
@@ -25,9 +27,9 @@
  *
  **/
 void divergence(
-		const float *v1, // x component of the vector field
-		const float *v2, // y component of the vector field
-		float *div,      // output divergence
+		const ofpix_t *v1, // x component of the vector field
+		const ofpix_t *v2, // y component of the vector field
+		ofpix_t *div,      // output divergence
 		const int nx,    // image width
 		const int ny     // image height
                 );
@@ -39,9 +41,9 @@ void divergence(
  *
  **/
 void forward_gradient(
-		const float *f, //input image
-		float *fx,      //computed x derivative
-		float *fy,      //computed y derivative
+		const ofpix_t *f, //input image
+		ofpix_t *fx,      //computed x derivative
+		ofpix_t *fy,      //computed y derivative
 		const int nx,   //image width
 		const int ny    //image height
                       );
@@ -53,8 +55,8 @@ void forward_gradient(
  *
  */
 void Dxx(
-    const float *I, //input image
-    float *Ixx,     //oputput derivative
+    const ofpix_t *I, //input image
+    ofpix_t *Ixx,     //oputput derivative
     const int nx,   //image width
     const int ny    //image height
          );
@@ -66,8 +68,8 @@ void Dxx(
  *
  */
 void Dyy(
-    const float *I, //input image
-    float *Iyy,     //oputput derivative
+    const ofpix_t *I, //input image
+    ofpix_t *Iyy,     //oputput derivative
     const int nx,   //image width
     const int ny    //image height
          );
@@ -79,8 +81,8 @@ void Dyy(
  *
  */
 void Dxy(
-    const float *I, //input image
-    float *Ixy,     //oputput derivative
+    const ofpix_t *I, //input image
+    ofpix_t *Ixy,     //oputput derivative
     const int nx,   //image width
     const int ny    //image height
          );
@@ -91,9 +93,9 @@ void Dxy(
  *
  */
 void centered_gradient(
-    const float *input, //input image
-    float *dx,          //computed x derivative
-    float *dy,          //computed y derivative
+    const ofpix_t *input, //input image
+    ofpix_t *dx,          //computed x derivative
+    ofpix_t *dy,          //computed y derivative
     const int nx,       //image width
     const int ny        //image height
               );
@@ -105,13 +107,35 @@ void centered_gradient(
  *
  */
 void centered_gradient3(
-    const float *input, //input image
-    float *dx,          //x derivative
-    float *dy,          //y derivative
-    float *dz,          //z derivative
+    const ofpix_t *input, //input image
+    ofpix_t *dx,          //x derivative
+    ofpix_t *dy,          //y derivative
+    ofpix_t *dz,          //z derivative
     const int nx,       //image width
     const int ny,       //image height
     const int nz        //image depth
                );
+
+#define BOUNDARY_CONDITION_DIRICHLET 0
+#define BOUNDARY_CONDITION_REFLECTING 1
+#define BOUNDARY_CONDITION_PERIODIC 2
+
+#define DEFAULT_GAUSSIAN_WINDOW_SIZE 5
+#define DEFAULT_BOUNDARY_CONDITION BOUNDARY_CONDITION_REFLECTING
+
+/**
+ *
+ * Convolution with a Gaussian
+ *
+ */
+ void gaussian(
+    ofpix_t *I,             //input/output image
+    const int xdim,       //image width
+    const int ydim,       //image height
+    const double sigma,   //Gaussian sigma
+    const int bc=DEFAULT_BOUNDARY_CONDITION,       //boundary condition
+    const int precision=DEFAULT_GAUSSIAN_WINDOW_SIZE //defines the size of the window
+               );
+
 
 #endif
