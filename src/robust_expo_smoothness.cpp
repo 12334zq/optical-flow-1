@@ -38,9 +38,9 @@ robust_expo_psi_smooth(const ofpix_t *ux, //gradient of x component of the optic
     //compute 1/(sqrt(ux²+uy²+vx²+vy²+e²) in each pixel
     #pragma omp parallel for
     for (int i = 0; i < size_flow; i++) {
-        const float du  = expo[i] * ux[i] * ux[i] + expo[i] * uy[i] * uy[i];
-        const float dv  = expo[i] * vx[i] * vx[i] + expo[i] * vy[i] * vy[i];
-        const float normFlow  = du + dv;
+        const ofpix_t du  = expo[i] * ux[i] * ux[i] + expo[i] * uy[i] * uy[i];
+        const ofpix_t dv  = expo[i] * vx[i] * vx[i] + expo[i] * vy[i] * vy[i];
+        const ofpix_t normFlow  = du + dv;
 
         psi[i] = expo[i] / sqrt(normFlow + ROBUST_EXPO_EPSILON * ROBUST_EXPO_EPSILON);
     }
@@ -62,7 +62,7 @@ max_gradients(const ofpix_t *Ix, // Computed Image 1 derivative in x
 
         for (int index_multichannel = 1; index_multichannel < nz; index_multichannel++) {
             const int real_index = index_image + index_multichannel;
-            const float gradient_in_this_pixel = sqrt(Ix[real_index] * Ix[real_index] + Iy[real_index] * Iy[real_index]);
+            const ofpix_t gradient_in_this_pixel = sqrt(Ix[real_index] * Ix[real_index] + Iy[real_index] * Iy[real_index]);
 
             if (maximum_gradients_per_pixel[index_flow] < gradient_in_this_pixel) {
                 maximum_gradients_per_pixel[index_flow] = gradient_in_this_pixel;
@@ -77,7 +77,7 @@ max_gradients(const ofpix_t *Ix, // Computed Image 1 derivative in x
  * It also return the maximum gradient per pixel
  **/
 static
-float
+double
 lambda_optimum_using_maximum_gradient_per_pixel(const ofpix_t *Ix, // Computed Image 1 derivative in x
                                                 const ofpix_t *Iy, // Computed Image 1 derivative in y
                                                 const int size, // Total image size (height * weight * nchannels)
@@ -95,7 +95,7 @@ lambda_optimum_using_maximum_gradient_per_pixel(const ofpix_t *Ix, // Computed I
 
         for (int index_multichannel = 1; index_multichannel < nz; index_multichannel++) {
             const int real_index = index_image + index_multichannel;
-            const float gradient_in_this_pixel = sqrt(Ix[real_index] * Ix[real_index] + Iy[real_index] * Iy[real_index]);
+            const ofpix_t gradient_in_this_pixel = sqrt(Ix[real_index] * Ix[real_index] + Iy[real_index] * Iy[real_index]);
 
             if (maximum_gradients_per_pixel[index_flow] < gradient_in_this_pixel) {
                 maximum_gradients_per_pixel[index_flow] = gradient_in_this_pixel;
@@ -116,7 +116,7 @@ lambda_optimum_using_maximum_gradient_per_pixel(const ofpix_t *Ix, // Computed I
     std::sort( gradients_ordered.begin(), gradients_ordered.end() );
     const float c = -log(XI) + log(alpha);
     int pos_ref = TAU * size_flow;
-    float lambda_pi = c / gradients_ordered[pos_ref - 1];
+    double lambda_pi;
 
     while ( (pos_ref < size_flow) && (c / 2 > gradients_ordered[pos_ref - 1]) ) {
         pos_ref++;
@@ -127,6 +127,7 @@ lambda_optimum_using_maximum_gradient_per_pixel(const ofpix_t *Ix, // Computed I
     } else {
         lambda_pi = (c / gradients_ordered[pos_ref - 1]);
     }
+    delete [] gradients_ordered;
 
     return lambda_pi;
 }
@@ -152,7 +153,7 @@ robust_expo_exponential_calculation(const ofpix_t *Ix, // Computed Image 1 deriv
     switch (method_type) {
     case 1:
     case 2: {
-        float beta = 0;
+        double beta = 0;
         if (method_type == 2) {   // For Exponential Beta Approximation
             beta = BETA;
         }
@@ -167,11 +168,11 @@ robust_expo_exponential_calculation(const ofpix_t *Ix, // Computed Image 1 deriv
     }
     case 3: {
         ofpix_t *lambda_per_pixel = new ofpix_t[size_flow];
-        float lambda_omega = lambda_optimum_using_maximum_gradient_per_pixel(Ix, Iy, size, size_flow, nz, alpha, lambda_per_pixel, maximum_gradients_per_pixel);
+        double lambda_omega = lambda_optimum_using_maximum_gradient_per_pixel(Ix, Iy, size, size_flow, nz, alpha, lambda_per_pixel, maximum_gradients_per_pixel);
 
         #pragma omp parallel for
         for (int index_flow = 0; index_flow < size_flow; index_flow++) {
-            float lambda_pi = lambda_omega;
+            double lambda_pi = lambda_omega;
             if (lambda_omega > lambda_per_pixel[index_flow]) {
                 lambda_pi = lambda_per_pixel[index_flow];
             }

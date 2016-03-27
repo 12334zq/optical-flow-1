@@ -69,7 +69,7 @@ zoom_out(const ofpix_t *I, // input image
         for (int j1 = 0; j1 < nxx; j1++) {
             const double i2  = i1 / factor;
             const double j2  = j1 / factor;
-            float g = bicubic_interpolation_at(Is, j2, i2, nx, ny, false);
+            ofpix_t g = bicubic_interpolation_at(Is, j2, i2, nx, ny, false);
             Iout[i1 * nxx + j1] = g;
         }
     }
@@ -113,8 +113,8 @@ zoom_out_color(const ofpix_t *I, // input image
         #pragma omp parallel for
         for (int i1 = 0; i1 < nyy; i1++) {
             for (int j1 = 0; j1 < nxx; j1++) {
-                const float i2  = (float) i1 / factor;
-                const float j2  = (float) j1 / factor;
+                const double i2  = i1 / factor;
+                const double j2  = j1 / factor;
 
                 Iout[(i1 * nxx + j1) * nz + index_multichannel] = bicubic_interpolation_at_color (Is, j2, i2, nx, ny, nz, index_multichannel);
             }
@@ -139,15 +139,15 @@ zoom_in(const ofpix_t *I, // input image
         )
 {
     // compute the zoom factor
-    const double factorx = ( (float)nxx / nx );
-    const double factory = ( (float)nyy / ny );
+    const double factorx = ( (double)nxx / nx );
+    const double factory = ( (double)nyy / ny );
 
     // re-sample the image using bicubic interpolation
     #pragma omp parallel for
     for (int i1 = 0; i1 < nyy; i1++) {
         for (int j1 = 0; j1 < nxx; j1++) {
-            double i2 =  (float) i1 / factory;
-            double j2 =  (float) j1 / factorx;
+            double i2 =  i1 / factory;
+            double j2 =  j1 / factorx;
             double g = bicubic_interpolation_at(I, j2, i2, nx, ny, false);
             Iout[i1 * nxx + j1] = g;
         }
