@@ -107,14 +107,11 @@ lambda_optimum_using_maximum_gradient_per_pixel(const ofpix_t *Ix, // Computed I
         index_flow++;
     }
 
-    std::vector<float> gradients_ordered(size_flow);
-    #pragma omp parallel for
-    for (int index_flow = 0; index_flow < size_flow; index_flow++) {
-        gradients_ordered[index_flow] = maximum_gradients_per_pixel[index_flow];
-    }
-
-    std::sort( gradients_ordered.begin(), gradients_ordered.end() );
-    const float c = -log(XI) + log(alpha);
+    // avoid using a std::vector for images, because it takes ages to initialize
+    ofpix_t* gradients_ordered = new ofpix_t[size_flow];
+    std::copy(maximum_gradients_per_pixel, maximum_gradients_per_pixel + size_flow, gradients_ordered);
+    std::sort( gradients_ordered, gradients_ordered + size_flow );
+    const double c = -log(XI) + log(alpha);
     int pos_ref = TAU * size_flow;
     double lambda_pi;
 
