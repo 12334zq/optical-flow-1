@@ -232,7 +232,7 @@ main(int argc,
         }
         iio_save_image_float_vec( (char *)outfile, f, nx, ny, 2 );
 
-        free(f);
+        delete [] f;
 
         //save the occlusions
 /*		int iv=0;
