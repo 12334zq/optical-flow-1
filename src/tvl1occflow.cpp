@@ -93,7 +93,7 @@ Threshold(ofpix_t *vector,
           const double threshold,
           const int size)
 {
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int j = 0; j < size; j++) {
         vector[j] = (vector[j] > threshold);
     }
@@ -122,7 +122,7 @@ choosed_g(ofpix_t *g_fun,
     case 2:
 
         centered_gradient(I, Ix, Iy, nx, ny, 1);
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             double gggrad = sqrt(Ix[i] * Ix[i] + Iy[i] * Iy[i]);
             double aux = 1. + g_factor * gggrad;
@@ -225,7 +225,7 @@ Dual_TVL1_optic_flow(ofpix_t *I_1,              // Previous frame to source Imag
         bicubic_interpolation_warp(I1y, u1, u2, I1wy, nx, ny);
 
         //Im1(x-u)
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             gp1[i] = -u1[i];
             gp2[i] = -u2[i];
@@ -237,7 +237,7 @@ Dual_TVL1_optic_flow(ofpix_t *I_1,              // Previous frame to source Imag
 
         //*********** END OF WARPING COMPUTATION
 
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             double Ix2 = 0.0;
             double Iy2 = 0.0;

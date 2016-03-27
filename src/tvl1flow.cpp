@@ -95,7 +95,7 @@ Dual_TVL1_optic_flow(ofpix_t *I0, // source image
         bicubic_interpolation_warp(I1x, u1, u2, I1wx, nx, ny, true);
         bicubic_interpolation_warp(I1y, u1, u2, I1wy, nx, ny, true);
 
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             const double Ix2 = I1wx[i] * I1wx[i];
             const double Iy2 = I1wy[i] * I1wy[i];
@@ -114,7 +114,7 @@ Dual_TVL1_optic_flow(ofpix_t *I0, // source image
             n++;
             // estimate the values of the variable (v1, v2)
             // (thresholding opterator TH)
-#pragma omp parallel for
+            #pragma omp parallel for
             for (int i = 0; i < size; i++) {
                 const double rho = rho_c[i]
                                    + (I1wx[i] * u1[i] + I1wy[i] * u2[i]);
@@ -148,7 +148,7 @@ Dual_TVL1_optic_flow(ofpix_t *I0, // source image
 
             // estimate the values of the optical flow (u1, u2)
             error = 0.0;
-#pragma omp parallel for reduction(+:error)
+            #pragma omp parallel for reduction(+:error)
             for (int i = 0; i < size; i++) {
                 const double u1k = u1[i];
                 const double u2k = u2[i];
@@ -166,7 +166,7 @@ Dual_TVL1_optic_flow(ofpix_t *I0, // source image
             forward_gradient(u2, u2x, u2y, nx, ny);
 
             // estimate the values of the dual variable (p1, p2)
-#pragma omp parallel for
+            #pragma omp parallel for
             for (int i = 0; i < size; i++) {
                 const double taut = tau / theta;
                 const double g1   = hypot(u1x[i], u1y[i]);

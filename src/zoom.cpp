@@ -64,7 +64,7 @@ zoom_out(const ofpix_t *I, // input image
     gaussian(Is, nx, ny, sigma);
 
     // re-sample the image using bicubic interpolation
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i1 = 0; i1 < nyy; i1++) {
         for (int j1 = 0; j1 < nxx; j1++) {
             const double i2  = i1 / factor;
@@ -110,7 +110,7 @@ zoom_out_color(const ofpix_t *I, // input image
 
     // re-sample the image using bicubic interpolation
     for (int index_multichannel = 0; index_multichannel < nz; index_multichannel++) {
-    #pragma omp parallel for
+        #pragma omp parallel for
         for (int i1 = 0; i1 < nyy; i1++) {
             for (int j1 = 0; j1 < nxx; j1++) {
                 const float i2  = (float) i1 / factor;
@@ -143,7 +143,7 @@ zoom_in(const ofpix_t *I, // input image
     const double factory = ( (float)nyy / ny );
 
     // re-sample the image using bicubic interpolation
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i1 = 0; i1 < nyy; i1++) {
         for (int j1 = 0; j1 < nxx; j1++) {
             double i2 =  (float) i1 / factory;

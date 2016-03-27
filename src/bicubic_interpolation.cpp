@@ -359,7 +359,7 @@ bicubic_interpolation_warp(const ofpix_t *input,          // image to be warped
                            bool border_out // if true, put zeros outside the region
                            )
 {
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < ny; i++) {
         for (int j = 0; j < nx; j++) {
             const int p = i * nx + j;
@@ -390,7 +390,7 @@ bicubic_interpolation_warp_color (const ofpix_t *input, //image to be warped
                                   )
 {
     for (int k = 0; k < nz; k++) {
-    #pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < ny; i++) {
             for (int j = 0; j < nx; j++) {
                 const int p = i * nx + j;

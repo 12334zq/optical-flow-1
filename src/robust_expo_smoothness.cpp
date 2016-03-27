@@ -159,7 +159,7 @@ robust_expo_exponential_calculation(const ofpix_t *Ix, // Computed Image 1 deriv
 
         max_gradients(Ix, Iy, size, nz, maximum_gradients_per_pixel);
 
-            #pragma omp parallel for
+        #pragma omp parallel for
         for (int index_flow = 0; index_flow < size_flow; index_flow++) {
             expo[index_flow] = exp(-lambda * maximum_gradients_per_pixel[index_flow]) + beta;
         }
@@ -169,7 +169,7 @@ robust_expo_exponential_calculation(const ofpix_t *Ix, // Computed Image 1 deriv
         ofpix_t *lambda_per_pixel = new ofpix_t[size_flow];
         float lambda_omega = lambda_optimum_using_maximum_gradient_per_pixel(Ix, Iy, size, size_flow, nz, alpha, lambda_per_pixel, maximum_gradients_per_pixel);
 
-                        #pragma omp parallel for
+        #pragma omp parallel for
         for (int index_flow = 0; index_flow < size_flow; index_flow++) {
             float lambda_pi = lambda_omega;
             if (lambda_omega > lambda_per_pixel[index_flow]) {

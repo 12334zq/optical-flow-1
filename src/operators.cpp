@@ -41,7 +41,7 @@ divergence(const ofpix_t *v1, // x component of the vector field
            )
 {
     // compute the divergence on the central body of the image
-#pragma omp parallel for schedule(dynamic)
+    #pragma omp parallel for schedule(dynamic)
     for (int i = 1; i < ny - 1; i++) {
         for (int j = 1; j < nx - 1; j++) {
             const int p  = i * nx + j;
@@ -92,7 +92,7 @@ forward_gradient(const ofpix_t *f, //input image
                  )
 {
     // compute the gradient on the central body of the image
-#pragma omp parallel for schedule(dynamic)
+    #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < ny - 1; i++) {
         for (int j = 0; j < nx - 1; j++) {
             const int p  = i * nx + j;
@@ -144,7 +144,7 @@ mask3x3(const ofpix_t *input, //input image
     for (int index_multichannel = 0; index_multichannel < nz; index_multichannel++) {
         //apply the mask to the center body of the image
 
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 1; i < ny - 1; i++) {
             for (int j = 1; j < nx - 1; j++) {
                 int k = (i * nx + j) * nz + index_multichannel;
@@ -160,7 +160,7 @@ mask3x3(const ofpix_t *input, //input image
         }
 
         //apply the mask to the first and last rows
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int j = 1; j < nx - 1; j++) {
             int index = j * nz + index_multichannel;
             double sum = 0;
@@ -192,7 +192,7 @@ mask3x3(const ofpix_t *input, //input image
         }
 
         //apply the mask to the first and last columns
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 1; i < ny - 1; i++) {
             int index = i * nx_multichannel + index_multichannel;
             double sum = 0;
@@ -345,7 +345,7 @@ centered_gradient(const ofpix_t *input, //input image
 
     for (int index_multichannel = 0; index_multichannel < nz; index_multichannel++) {
         //gradient in the center body of the image
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 1; i < ny - 1; i++) {
             for (int j = 1; j < nx - 1; j++) {
                 const int k = (i * nx + j) * nz + index_multichannel;
@@ -356,7 +356,7 @@ centered_gradient(const ofpix_t *input, //input image
         }
 
         //gradient in the first and last rows
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int j = 1; j < nx - 1; j++) {
             const int index = j * nz + index_multichannel;
 
@@ -370,7 +370,7 @@ centered_gradient(const ofpix_t *input, //input image
         }
 
         //gradient in the first and last columns
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 1; i < ny - 1; i++) {
             const int p = (i * nx_multichannel) + index_multichannel;
 

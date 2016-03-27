@@ -262,13 +262,13 @@ image_normalization_1(const ofpix_t *I,       //input images
 
     if (den > 0) {
         //normalize the images between 0 and 255
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             In[i] = 255.0 * (I[i] - min) / den;
         }
     } else {
         //copy the original data
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             In[i] = I[i];
         }
@@ -310,14 +310,14 @@ image_normalization_2(const ofpix_t *I1,      //input image 1
 
     if (den > 0) {
         //normalize the images between 0 and 255
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             I1n[i] = 255.0 * (I1[i] - min) / den;
             I2n[i] = 255.0 * (I2[i] - min) / den;
         }
     } else {
         //copy the original data
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             I1n[i] = I1[i];
             I2n[i] = I2[i];
@@ -383,7 +383,7 @@ image_normalization_2_color (     const ofpix_t *I1,    //input image 1
 
         if (den > 0) {
             //normalize the images between 0 and 255
-#pragma omp parallel for
+            #pragma omp parallel for
             for (int index_image = 0; index_image < size; index_image += nz) {
                 int real_index = index_image + index_multichannel;
 
@@ -392,7 +392,7 @@ image_normalization_2_color (     const ofpix_t *I1,    //input image 1
             }
         } else   {
             //copy the original data
-#pragma omp parallel for
+            #pragma omp parallel for
             for (int index_image = 0; index_image < size; index_image += nz) {
                 int real_index = index_image + index_multichannel;
 
@@ -441,7 +441,7 @@ image_normalization_3(ofpix_t *I0,
 
     const ofpix_t den = max - min;
 
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; i++) {
         I0[i] = 255.0 * (I0[i] - min) / den;
         I1[i] = 255.0 * (I1[i] - min) / den;
@@ -482,7 +482,7 @@ image_normalization_4(const ofpix_t *I_1,      // input image-1
 
     if (den > 0) {
         // normalize both images
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             I_1n[i] = 255.0 * (I_1[i] - min) / den;
             I0n[i] = 255.0 * (I0[i] - min) / den;
@@ -491,7 +491,7 @@ image_normalization_4(const ofpix_t *I_1,      // input image-1
         }
     } else {
         // copy the original images
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             I_1n[i] = I_1[i];
             I0n[i] = I0[i];

@@ -82,7 +82,7 @@ Solver_wrt_v(ofpix_t *u1,
     const double at_d_1pat = alpha * theta / _1pat;
     const double lt_d_1pat = 2. * lambda * theta / _1pat;
 
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; i++) {
         double d1 = 0, d2 = 0;
 

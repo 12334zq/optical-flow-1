@@ -49,7 +49,7 @@ psi_data (const ofpix_t *I1, //first image
     const int size = nx * ny;
 
     //compute 1/(sqrt(Sum(I2-I1+I2x*du+I2y*dv)²+e²) in each pixel
-  #pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; i++) {
         double dI2 = 0;
         for (int k = 0; k < nz; k++) {
@@ -254,7 +254,7 @@ robust_expo_methods(const ofpix_t *I1, //first image
         robust_expo_divergence (u, psi1, psi2, psi3, psi4, nx, ny, div_u);
         robust_expo_divergence (v, psi1, psi2, psi3, psi4, nx, ny, div_v);
 
-      #pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size_flow; i++) {
             //compute the coefficents of dw[i] in the smoothness term using gradient exponent
             div_d[i] = alpha * (psi1[i] + psi2[i] + psi3[i] + psi4[i]);

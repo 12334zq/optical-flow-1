@@ -47,7 +47,7 @@ psi_data(const ofpix_t *I1, //first image
 
     //compute 1/(sqrt((I2-I1+I2x*du+I2y*dv)²+e²) in each pixel
     //(equation (5) in the article)
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; i++) {
         const double dI  = I2[i] - I1[i] + I2x[i] * du[i] + I2y[i] * dv[i];
         const double dI2 = dI * dI;
@@ -81,7 +81,7 @@ psi_gradient(const ofpix_t *I1x, //gradient of the first image
 
     //compute 1/(sqrt(|DI2-DI1+HI2*(du,dv)|²+e²) in each pixel
     //(equation (5) in the article)
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; i++) {
         const double dIx = I2x[i] - I1x[i] + I2xx[i] * du[i] + I2xy[i] * dv[i];
         const double dIy = I2y[i] - I1y[i] + I2xy[i] * du[i] + I2yy[i] * dv[i];
@@ -111,7 +111,7 @@ psi_smooth(const ofpix_t *ux, //gradient of x component of the optical flow
 
     //compute 1/(sqrt(ux²+uy²+vx²+vy²+e²) in each pixel
     //(equation (5) in the article)
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; i++) {
         const double du  = ux[i] * ux[i] + uy[i] * uy[i];
         const double dv  = vx[i] * vx[i] + vy[i] * vy[i];
@@ -263,7 +263,7 @@ brox_optic_flow(   const ofpix_t *I1,//first image
         //compute the divergence for the gradient of w (equation (8))
         brox_spatial_divergence_u(u, v, psi1, psi2, psi3, psi4, div_u, div_v, nx, ny);
 
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < size; i++) {
             //compute the coefficents of dw[i] in the smoothness term
             //(equation (10))
@@ -317,7 +317,7 @@ brox_optic_flow(   const ofpix_t *I1,//first image
                 nsor++;
 
                 //update the motion increment in the center of the images
-#pragma omp parallel for reduction(+:error) num_threads((number_of_threads < (ny-3)) ? number_of_threads : (ny-3))
+                #pragma omp parallel for reduction(+:error) num_threads((number_of_threads < (ny-3)) ? number_of_threads : (ny-3))
                 for (int i = 1; i < ny - 1; i++) {
                     for (int j = 1; j < nx - 1; j++) {
                         error += sor_iteration(
@@ -509,7 +509,7 @@ brox_optic_flow_spatial(const ofpix_t *I1, //first image
     }
 
     int number_of_threads = 0;
-#pragma omp parallel reduction(+:number_of_threads)
+    #pragma omp parallel reduction(+:number_of_threads)
     number_of_threads += 1;
 
     //pyramidal approach for computing the optical flow

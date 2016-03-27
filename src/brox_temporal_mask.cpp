@@ -32,7 +32,7 @@ brox_temporal_psi_divergence(const ofpix_t *psi, //robust functional
 
     //compute the spatial psi functions for all frames
     for (int f = 0; f < nz; f++) {
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 1; i < ny - 1; i++) {
             for (int j = 1; j < nx - 1; j++) {
                 const int k = f * df + i * nx + j;
@@ -45,7 +45,7 @@ brox_temporal_psi_divergence(const ofpix_t *psi, //robust functional
         }
 
         //calculate coefficients in the first and last rows
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int j = 1; j < nx - 1; j++) {
             int k = f * df + j;
 
@@ -63,7 +63,7 @@ brox_temporal_psi_divergence(const ofpix_t *psi, //robust functional
         }
 
         //calculate coefficients in the first and last columns
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 1; i < ny - 1; i++) {
             int k = f * df + i * nx;
 
@@ -157,7 +157,7 @@ brox_temporal_divergence_u(const ofpix_t *u, //x component of optical flow
 
     //calculate the divergence in the center body of the image
     for (int f = 0; f < nz; f++) {
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 1; i < ny - 1; i++) {
             for (int j = 1; j < nx - 1; j++) {
                 const int k = f * df + i * nx + j;
@@ -170,7 +170,7 @@ brox_temporal_divergence_u(const ofpix_t *u, //x component of optical flow
         }
 
         //calculate the divergence in the first and last rows
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int j = 1; j < nx - 1; j++) {
             int k = f * df + j;
             div_u[k] = psi1[k] * (u[k + nx] - u[k]) + psi3[k] * (u[k + 1] - u[k]) + psi4[k] * (u[k - 1] - u[k]);
@@ -182,7 +182,7 @@ brox_temporal_divergence_u(const ofpix_t *u, //x component of optical flow
         }
 
         //calculate the divergence in the first and last columns
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 1; i < ny - 1; i++) {
             int k = f * df + i * nx;
             div_u[k] = psi1[k] * (u[k + nx] - u[k]) + psi2[k] * (u[k - nx] - u[k]) + psi3[k] * (u[k + 1] - u[k]);

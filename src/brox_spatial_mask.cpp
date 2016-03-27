@@ -24,7 +24,7 @@ brox_spatial_psi_divergence(const ofpix_t *psi, //robust functional
                             )
 {
     //calculate coefficients in the center body of the image
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 1; i < ny - 1; i++) {
         for (int j = 1; j < nx - 1; j++) {
             const int k = i * nx + j;
@@ -37,7 +37,7 @@ brox_spatial_psi_divergence(const ofpix_t *psi, //robust functional
     }
 
     //calculate coefficients in the first and last rows
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int j = 1; j < nx - 1; j++) {
         psi1[j] = 0.5 * (psi[j + nx] + psi[j]);
         psi2[j] = 0;
@@ -53,7 +53,7 @@ brox_spatial_psi_divergence(const ofpix_t *psi, //robust functional
     }
 
     //calculate coefficients in the first and last columns
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 1; i < ny - 1; i++) {
         const int k  = i * nx;
 
@@ -111,7 +111,7 @@ brox_spatial_divergence_u(const ofpix_t *u, //x component of optical flow
                           )
 {
     //calculate the divergence in the center body of the image
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 1; i < ny - 1; i++) {
         for (int j = 1; j < nx - 1; j++) {
             const int k = i * nx + j;
@@ -124,7 +124,7 @@ brox_spatial_divergence_u(const ofpix_t *u, //x component of optical flow
     }
 
     //calculate the divergence in the first and last rows
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int j = 1; j < nx - 1; j++) {
         div_u[j] = psi1[j] * (u[j + nx] - u[j]) + psi3[j] * (u[j + 1]  - u[j]) + psi4[j] * (u[j - 1] - u[j]);
         div_v[j] = psi1[j] * (v[j + nx] - v[j]) + psi3[j] * (v[j + 1]  - v[j]) + psi4[j] * (v[j - 1] - v[j]);
@@ -136,7 +136,7 @@ brox_spatial_divergence_u(const ofpix_t *u, //x component of optical flow
     }
 
     //calculate the divergence in the first and last columns
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 1; i < ny - 1; i++) {
         const int k  = i * nx;
 
